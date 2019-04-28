@@ -11,7 +11,7 @@ enum CircuitBreakerInput {
     TimerTriggered,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 enum CircuitBreakerState {
     Closed,
     Open,
