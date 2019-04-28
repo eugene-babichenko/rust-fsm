@@ -1,5 +1,7 @@
 # A framework for building finite state machines in Rust
 
+[![Build Status][build-badge]][build-link]
+
 The `rust-fsm` crate provides a simple and universal framework for building
 state machines in Rust with minimum effort. The essential part of this crate
 is the `StateMachine` trait. This trait allows a developer to provide a
@@ -35,3 +37,5 @@ You can see an example of the Circuit Breaker state machine in the
 [project repository][repo].
 
 [repo]: https://github.com/eugene-babichenko/rust-fsm/blob/master/examples/circuit_breaker.rs
+[build-badge]: https://travis-ci.org/eugene-babichenko/rust-fsm.svg?branch=master
+[build-link]: https://travis-ci.org/eugene-babichenko/rust-fsm

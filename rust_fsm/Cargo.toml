@@ -11,5 +11,8 @@ version = "0.1.0"
 authors = ["Yevhenii Babichenko"]
 edition = "2018"
 
+[badges]
+travis-ci = { repository = "eugene-babichenko/rust-fsm" }
+
 [dev-dependencies]
 rust-fsm-dsl = { path = "../rust_fsm_dsl" }

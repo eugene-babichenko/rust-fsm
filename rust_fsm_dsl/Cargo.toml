@@ -11,6 +11,9 @@ version = "0.1.0"
 authors = ["Yevhenii Babichenko"]
 edition = "2018"
 
+[badges]
+travis-ci = { repository = "eugene-babichenko/rust-fsm" }
+
 [lib]
 proc-macro = true
 
