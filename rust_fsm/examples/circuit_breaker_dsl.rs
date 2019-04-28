@@ -6,6 +6,7 @@ extern crate rust_fsm_dsl;
 
 use rust_fsm::*;
 use std::sync::{Arc, Mutex};
+use std::time::Duration;
 
 state_machine! {
     CircuitBreaker(Closed)
@@ -31,7 +32,7 @@ fn main() {
     // Set up a timer
     let machine_wait = machine.clone();
     std::thread::spawn(move || {
-        std::thread::sleep_ms(5000);
+        std::thread::sleep(Duration::new(5, 0));
         let mut lock = machine_wait.lock().unwrap();
         let res = lock.consume_anyway(&CircuitBreakerInput::TimerTriggered);
         assert_eq!(res, None);
@@ -41,7 +42,7 @@ fn main() {
     // Try to pass a request when the circuit breaker is still open
     let machine_try = machine.clone();
     std::thread::spawn(move || {
-        std::thread::sleep_ms(1000);
+        std::thread::sleep(Duration::new(1, 0));
         let mut lock = machine_try.lock().unwrap();
         let res = lock.consume_anyway(&CircuitBreakerInput::Successful);
         assert_eq!(res, None);
@@ -49,7 +50,7 @@ fn main() {
     });
 
     // Test if the circit breaker was actually closed
-    std::thread::sleep_ms(7000);
+    std::thread::sleep(Duration::new(7, 0));
     {
         let mut lock = machine.lock().unwrap();
         let res = lock.consume_anyway(&CircuitBreakerInput::Successful);
