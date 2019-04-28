@@ -16,6 +16,4 @@ proc-macro = true
 
 [dependencies]
 syn = "*"
-
-[dev-dependencies]
-rust-fsm = { path = "../rust_fsm" }
+quote = "*"

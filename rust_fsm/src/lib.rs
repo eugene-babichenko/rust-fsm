@@ -30,7 +30,7 @@
 //! All you need to do to build a state machine is to implement the
 //! `StateMachine` trait and use it in conjuctions with some of the provided
 //! wrappers (for now there is only `StateMachineWrapper`).
-//! 
+//!
 //! You can see an example of the Circuit Breaker state machine in the
 //! [project repository][repo].
 //!
