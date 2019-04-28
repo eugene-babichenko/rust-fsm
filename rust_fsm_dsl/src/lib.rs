@@ -142,7 +142,7 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
     let output = quote! {
         struct #struct_name;
 
-        #[derive(Debug, PartialEq)]
+        #[derive(Clone, Copy, Debug, PartialEq)]
         enum #states_enum_name {
             #(#states),*
         }

@@ -6,7 +6,7 @@ pub trait StateMachine {
     /// The input alphabet.
     type Input;
     /// The set of possible states.
-    type State;
+    type State: Copy;
     /// The output alphabet.
     type Output;
     /// The initial state of the machine.
