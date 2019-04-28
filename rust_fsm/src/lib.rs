@@ -36,8 +36,76 @@
 //!
 //! [repo]: https://github.com/eugene-babichenko/rust-fsm/blob/master/examples/circuit_breaker.rs
 
-mod machine;
-mod machine_wrapper;
+/// This trait is designed to describe any possible deterministic finite state
+/// machine/transducer. This is just a formal definition that may be
+/// inconvenient to be used in practical programming, but it is used throughout
+/// this library for more practical things.
+pub trait StateMachine {
+    /// The input alphabet.
+    type Input;
+    /// The set of possible states.
+    type State: Copy;
+    /// The output alphabet.
+    type Output;
+    /// The initial state of the machine.
+    const INITIAL_STATE: Self::State;
+    /// The transition fuction that outputs a new state based on the current
+    /// state and the provided input. Outputs `None` when there is no transition
+    /// for a given combination of the input and the state.
+    fn transition(state: &Self::State, input: &Self::Input) -> Option<Self::State>;
+    /// The output function that outputs some value from the output alphabet
+    /// based on the current state and the given input. Outputs `None` when
+    /// there is no output for a given combination of the input and the state.
+    fn output(state: &Self::State, input: &Self::Input) -> Option<Self::Output>;
+}
 
-pub use machine::StateMachine;
-pub use machine_wrapper::StateMachineWrapper;
+/// A convenience wrapper around the `StateMachine` trait that encapsulates the
+/// state and transition and output function calls.
+pub struct StateMachineWrapper<T: StateMachine> {
+    state: T::State,
+}
+
+impl<T> StateMachineWrapper<T>
+where
+    T: StateMachine,
+{
+    /// Create a new instance of this wrapper which encapsulates the initial
+    /// state.
+    pub fn new() -> Self {
+        StateMachineWrapper {
+            state: T::INITIAL_STATE,
+        }
+    }
+
+    /// Consumes the provided input, gives an output and performs a state
+    /// transition. If a state transition with the current state and the
+    /// provided input is not allowed, returns an error.
+    pub fn consume(&mut self, input: &T::Input) -> Result<Option<T::Output>, ()> {
+        // Operations are reodered for optimization. When the transition is not
+        // allowed this code exits as soon as possible without calculating the
+        // output.
+        let state = match T::transition(&self.state, input) {
+            Some(state) => state,
+            None => return Err(()),
+        };
+        let output = T::output(&self.state, input);
+        self.state = state;
+        Ok(output)
+    }
+
+    /// Consumes the provided input, gives an output and performs a state
+    /// transition. If a state transition is not allowed, this function just
+    /// provides an output.
+    pub fn consume_anyway(&mut self, input: &T::Input) -> Option<T::Output> {
+        let output = T::output(&self.state, input);
+        if let Some(state) = T::transition(&self.state, input) {
+            self.state = state;
+        }
+        output
+    }
+
+    /// Returns the current state.
+    pub fn state(&self) -> &T::State {
+        &self.state
+    }
+}
