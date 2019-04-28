@@ -1,0 +1,21 @@
+[package]
+name = "rust-fsm-dsl"
+description = "Macros for rust-fsm DSL"
+repository = "https://github.com/eugene-babichenko/rust-fsm"
+homepage = "https://github.com/eugene-babichenko/rust-fsm"
+readme = "../README.md"
+license = "MIT"
+categories = ["data-structures", "rust-patterns"]
+keywords = ["fsm"]
+version = "0.1.0"
+authors = ["Yevhenii Babichenko"]
+edition = "2018"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+syn = "*"
+
+[dev-dependencies]
+rust-fsm = { path = "../rust_fsm" }
