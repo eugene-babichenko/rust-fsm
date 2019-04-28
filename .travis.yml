@@ -1,0 +1,6 @@
+language: rust
+cache: cargo
+script:
+  - cargo fmt -- --check
+  - cargo clippy
+  - cargo test
