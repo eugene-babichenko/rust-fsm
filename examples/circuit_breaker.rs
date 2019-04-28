@@ -96,7 +96,6 @@ fn main() {
     // Test if the circit breaker was actually closed
     std::thread::sleep_ms(7000);
     {
-        std::thread::sleep_ms(5000);
         let mut lock = machine.lock().unwrap();
         let res = lock.consume_anyway(&CircuitBreakerInput::Successful);
         assert_eq!(res, None);
