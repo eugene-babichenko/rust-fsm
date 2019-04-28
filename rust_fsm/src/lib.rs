@@ -109,3 +109,12 @@ where
         &self.state
     }
 }
+
+impl<T> Default for StateMachineWrapper<T>
+where
+    T: StateMachine,
+{
+    fn default() -> Self {
+        Self::new()
+    }
+}
