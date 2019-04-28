@@ -1,13 +1,2 @@
-[package]
-name = "rust-fsm"
-description = "A framework for building finite state machines in Rust"
-repository = "https://github.com/eugene-babichenko/rust-fsm"
-homepage = "https://github.com/eugene-babichenko/rust-fsm"
-readme = "README.md"
-categories = ["data-structures", "rust-patterns"]
-keywords = ["fsm"]
-version = "0.1.0"
-authors = ["Yevhenii Babichenko"]
-edition = "2018"
-
-[dependencies]
+[workspace]
+members = ["rust_fsm"]
