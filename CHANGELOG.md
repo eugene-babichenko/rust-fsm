@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog][keepachangelog], and this project
 adheres to [Semantic Versioning][semver].
 
 ## [Unreleased]
+* Allow setting visibitility for generated state machine types by putting a
+  visibility modifier before the state machine name.
 
 ## [0.1.0] - 2019-04-29
 ### Added

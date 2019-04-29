@@ -13,7 +13,7 @@ use syn::{
     parse_macro_input,
     punctuated::Punctuated,
     token::Bracket,
-    Ident, Token,
+    Ident, Token, Visibility,
 };
 
 struct TransitionDef {
@@ -48,6 +48,7 @@ impl Parse for TransitionDef {
 }
 
 struct StateMachineDef {
+    visibility: Visibility,
     name: Ident,
     initial_state: Ident,
     transitions: Punctuated<TransitionDef, Token![,]>,
@@ -55,12 +56,14 @@ struct StateMachineDef {
 
 impl Parse for StateMachineDef {
     fn parse(input: ParseStream) -> Result<Self> {
+        let visibility = input.parse()?;
         let name = input.parse()?;
         let initial_state_content;
         parenthesized!(initial_state_content in input);
         let initial_state = initial_state_content.parse()?;
         let transitions = input.parse_terminated(TransitionDef::parse)?;
         Ok(Self {
+            visibility,
             name,
             initial_state,
             transitions,
@@ -80,6 +83,7 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
     }
 
     let struct_name = input.name;
+    let visibility = input.visibility;
 
     let mut states = HashSet::new();
     let mut inputs = HashSet::new();
@@ -117,7 +121,7 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
         let outputs_type_name = Ident::new(&format!("{}Output", struct_name), struct_name.span());
         let outputs_repr = quote! {
             #[derive(Debug, PartialEq)]
-            enum #outputs_type_name {
+            #visibility enum #outputs_type_name {
                 #(#outputs),*
             }
         };
@@ -150,15 +154,15 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
     };
 
     let output = quote! {
-        struct #struct_name;
+        #visibility struct #struct_name;
 
         #[derive(Clone, Copy, Debug, PartialEq)]
-        enum #states_enum_name {
+        #visibility enum #states_enum_name {
             #(#states),*
         }
 
         #[derive(Debug, PartialEq)]
-        enum #inputs_enum_name {
+        #visibility enum #inputs_enum_name {
             #(#inputs),*
         }
 
