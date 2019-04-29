@@ -72,6 +72,13 @@ impl Parse for StateMachineDef {
 pub fn state_machine(tokens: TokenStream) -> TokenStream {
     let input = parse_macro_input!(tokens as StateMachineDef);
 
+    if input.transitions.is_empty() {
+        let output = quote! {
+            compile_error!("rust-fsm: at least one state transition must be provided");
+        };
+        return output.into();
+    }
+
     let struct_name = input.name;
 
     let mut states = HashSet::new();
