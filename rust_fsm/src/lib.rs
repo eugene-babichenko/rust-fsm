@@ -45,11 +45,11 @@
 //!
 //! The DSL is parsed by the `state_machine` macro. Here is a little example.
 //!
-//! ```rust
+//! ```rust,ignore
 //! #[macro_use]
 //! extern crate rust_fsm_dsl;
 //!
-//! use use rust_fsm::*;
+//! use rust_fsm::*;
 //!
 //! state_machine! {
 //!     CircuitBreaker(Closed)
@@ -73,7 +73,7 @@
 //!
 //! This state machine can be used as follows:
 //!
-//! ```rust
+//! ```rust,ignore
 //! // Initialize the state machine. The state is `Closed` now.
 //! let mut machine: StateMachineWrapper<CircuitBreaker> = StateMachineWrapper::new();
 //! // Consume the `Successful` input. No state transition is performed. Output

@@ -51,7 +51,7 @@ The DSL is parsed by the `state_machine` macro. Here is a little example.
 #[macro_use]
 extern crate rust_fsm_dsl;
 
-use use rust_fsm::*;
+use rust_fsm::*;
 
 state_machine! {
     CircuitBreaker(Closed)
