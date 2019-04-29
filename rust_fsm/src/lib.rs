@@ -1,9 +1,18 @@
 //! A framework for building finite state machines in Rust
 //!
 //! The `rust-fsm` crate provides a simple and universal framework for building
-//! state machines in Rust with minimum effort. The essential part of this crate
-//! is the [`StateMachine`] trait. This trait allows a developer to provide a
-//! strict state machine definition, e.g. specify its:
+//! state machines in Rust with minimum effort. This is achieved by two
+//! components:
+//!
+//! * The `rust-fsm` crate, that provides data types for building state machines
+//!   and convenience wrappers for these types.
+//! * The `rust-fsm-dsl` crate, that contains the `state_machine` macro that
+//!   parses a simple DSL and generates all boilerplate code for the described
+//!   state machine.
+//!
+//! The essential part of this crate is the [`StateMachine`] trait. This trait
+//! allows a developer to provide a strict state machine definition, e.g.
+//! specify its:
 //!
 //! * An input alphabet - a set of entities that the state machine takes as
 //!   inputs and performs state transitions based on them.
@@ -26,6 +35,80 @@
 //!   provided inputs.
 //!
 //! # Use
+//!
+//! Initially this library was designed to build an easy to use DSL for defining
+//! state machines on top of it. Using the DSL will require to connect an
+//! additional crate `rust-fsm-dsl` (this is due to limitation of the procedural
+//! macros system).
+//!
+//! ## Using the DSL for defining state machines
+//!
+//! The DSL is parsed by the `state_machine` macro. Here is a little example.
+//!
+//! ```rust
+//! #[macro_use]
+//! extern crate rust_fsm_dsl;
+//!
+//! use use rust_fsm::*;
+//!
+//! state_machine! {
+//!     CircuitBreaker(Closed)
+//!
+//!     Closed(Unsuccessful) => Open [SetupTimer],
+//!     Open(TimerTriggered) => HalfOpen,
+//!     HalfOpen(Successful) => Closed,
+//!     HalfOpen(Unsuccessful) => Open [SetupTimer],
+//! }
+//! ```
+//!
+//! This code sample:
+//!
+//! * Defines a state machine called `CircuitBreaker`;
+//! * Sets the initial state of this state machine to `Closed`;
+//! * Defines state transitions. For example: on receiving the `Successful`
+//!   input when in the `HalfOpen` state, the machine must move to the `Closed`
+//!   state;
+//! * Defines outputs. For example: on receiving `Unsuccessful` in the
+//!   `Closed` state, the machine must output `SetupTimer`.
+//!
+//! This state machine can be used as follows:
+//!
+//! ```rust
+//! // Initialize the state machine. The state is `Closed` now.
+//! let mut machine: StateMachineWrapper<CircuitBreaker> = StateMachineWrapper::new();
+//! // Consume the `Successful` input. No state transition is performed. Output
+//! // is `None`.
+//! machine.consume_anyway(&CircuitBreakerInput::Successful);
+//! // Consume the `Unsuccesful` input. The machine is moved to the `Open`
+//! // state. The output is `SetupTimer`.
+//! let output = machine.consume_anyway(&CircuitBreakerInput::Unsuccesful);
+//! // Check the output
+//! if output == Some(CircuitBreakerOutput::SetupTimer) {
+//!     // Set up the timer...
+//! }
+//! // Check the state
+//! if machine.state() == &CircuitBreakerState::Open {
+//!     // Do something...
+//! }
+//! ```
+//!
+//! As you can see, the following entities are generated:
+//!
+//! * An empty structure `CircuitBreaker` that implements the `StateMachine`
+//!   trait.
+//! * Enums `CircuitBreakerState`, `CircuitBreakerInput` and
+//!   `CircuitBreakerOutput` that represent the state, the input alphabet and
+//!   the output alphabet respectively.
+//!
+//! Note that if there is no outputs in the specification, the output alphabet
+//! is set to `()`. The set of states and the input alphabet must be non-empty
+//! sets.
+//!
+//! ## Without DSL
+//!
+//! The `state_machine` macro has limited capabilities (for example, a state
+//! cannot carry any additional data), so in certain complex cases a user might
+//! want to write a more complex state machine by hand.
 //!
 //! All you need to do to build a state machine is to implement the
 //! `StateMachine` trait and use it in conjuctions with some of the provided

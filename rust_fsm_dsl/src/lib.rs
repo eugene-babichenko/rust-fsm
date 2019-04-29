@@ -1,3 +1,6 @@
+//! DSL implementation for defining finite state machines for `rust-fsm`. See
+//! more in the `rust-fsm` crate documentation.
+
 #![recursion_limit = "128"]
 extern crate proc_macro;
 
