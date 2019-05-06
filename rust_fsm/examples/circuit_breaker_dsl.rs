@@ -24,7 +24,7 @@ fn main() {
     let machine = Arc::new(Mutex::new(machine));
     {
         let mut lock = machine.lock().unwrap();
-        let res = lock.consume_anyway(&CircuitBreakerInput::Unsuccessful);
+        let res = lock.consume(&CircuitBreakerInput::Unsuccessful).unwrap();
         assert_eq!(res, Some(CircuitBreakerOutput::SetupTimer));
         assert_eq!(lock.state(), &CircuitBreakerState::Open);
     }
@@ -34,7 +34,7 @@ fn main() {
     std::thread::spawn(move || {
         std::thread::sleep(Duration::new(5, 0));
         let mut lock = machine_wait.lock().unwrap();
-        let res = lock.consume_anyway(&CircuitBreakerInput::TimerTriggered);
+        let res = lock.consume(&CircuitBreakerInput::TimerTriggered).unwrap();
         assert_eq!(res, None);
         assert_eq!(lock.state(), &CircuitBreakerState::HalfOpen);
     });
@@ -44,8 +44,8 @@ fn main() {
     std::thread::spawn(move || {
         std::thread::sleep(Duration::new(1, 0));
         let mut lock = machine_try.lock().unwrap();
-        let res = lock.consume_anyway(&CircuitBreakerInput::Successful);
-        assert_eq!(res, None);
+        let res = lock.consume(&CircuitBreakerInput::Successful);
+        assert_eq!(res, Err(()));
         assert_eq!(lock.state(), &CircuitBreakerState::Open);
     });
 
@@ -53,7 +53,7 @@ fn main() {
     std::thread::sleep(Duration::new(7, 0));
     {
         let mut lock = machine.lock().unwrap();
-        let res = lock.consume_anyway(&CircuitBreakerInput::Successful);
+        let res = lock.consume(&CircuitBreakerInput::Successful).unwrap();
         assert_eq!(res, None);
         assert_eq!(lock.state(), &CircuitBreakerState::Closed);
     }

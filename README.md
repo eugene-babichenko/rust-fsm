@@ -78,12 +78,11 @@ This state machine can be used as follows:
 ```rust
 // Initialize the state machine. The state is `Closed` now.
 let mut machine: StateMachineWrapper<CircuitBreaker> = StateMachineWrapper::new();
-// Consume the `Successful` input. No state transition is performed. Output
-// is `None`.
-machine.consume_anyway(&CircuitBreakerInput::Successful);
+// Consume the `Successful` input. No state transition is performed.
+let _ = machine.consume(&CircuitBreakerInput::Successful);
 // Consume the `Unsuccesful` input. The machine is moved to the `Open`
 // state. The output is `SetupTimer`.
-let output = machine.consume_anyway(&CircuitBreakerInput::Unsuccesful);
+let output = machine.consume(&CircuitBreakerInput::Unsuccesful).unwrap();
 // Check the output
 if output == Some(CircuitBreakerOutput::SetupTimer) {
     // Set up the timer...

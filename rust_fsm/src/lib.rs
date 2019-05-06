@@ -76,12 +76,11 @@
 //! ```rust,ignore
 //! // Initialize the state machine. The state is `Closed` now.
 //! let mut machine: StateMachineWrapper<CircuitBreaker> = StateMachineWrapper::new();
-//! // Consume the `Successful` input. No state transition is performed. Output
-//! // is `None`.
-//! machine.consume_anyway(&CircuitBreakerInput::Successful);
+//! // Consume the `Successful` input. No state transition is performed.
+//! let _ = machine.consume(&CircuitBreakerInput::Successful);
 //! // Consume the `Unsuccesful` input. The machine is moved to the `Open`
 //! // state. The output is `SetupTimer`.
-//! let output = machine.consume_anyway(&CircuitBreakerInput::Unsuccesful);
+//! let output = machine.consume(&CircuitBreakerInput::Unsuccesful).unwrap();
 //! // Check the output
 //! if output == Some(CircuitBreakerOutput::SetupTimer) {
 //!     // Set up the timer...
@@ -174,17 +173,6 @@ where
         let output = T::output(&self.state, input);
         self.state = state;
         Ok(output)
-    }
-
-    /// Consumes the provided input, gives an output and performs a state
-    /// transition. If a state transition is not allowed, this function just
-    /// provides an output.
-    pub fn consume_anyway(&mut self, input: &T::Input) -> Option<T::Output> {
-        let output = T::output(&self.state, input);
-        if let Some(state) = T::transition(&self.state, input) {
-            self.state = state;
-        }
-        output
     }
 
     /// Returns the current state.
