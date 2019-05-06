@@ -13,7 +13,7 @@ state_machine! {
 }
 
 fn main() {
-    let mut machine: StateMachineWrapper<Door> = StateMachineWrapper::new();
+    let mut machine: StateMachine<Door> = StateMachine::new();
     machine.consume(&DoorInput::Key).unwrap();
     println!("{:?}", machine.state());
     machine.consume(&DoorInput::Key).unwrap();

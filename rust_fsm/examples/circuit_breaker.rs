@@ -25,7 +25,7 @@ struct CircuitBreakerOutputSetTimer;
 #[derive(Debug)]
 struct CircuitBreakerMachine;
 
-impl StateMachine for CircuitBreakerMachine {
+impl StateMachineImpl for CircuitBreakerMachine {
     type Input = CircuitBreakerInput;
     type State = CircuitBreakerState;
     type Output = CircuitBreakerOutputSetTimer;
@@ -63,7 +63,7 @@ impl StateMachine for CircuitBreakerMachine {
 }
 
 fn main() {
-    let machine: StateMachineWrapper<CircuitBreakerMachine> = StateMachineWrapper::new();
+    let machine: StateMachine<CircuitBreakerMachine> = StateMachine::new();
 
     // Unsuccessful request
     let machine = Arc::new(Mutex::new(machine));

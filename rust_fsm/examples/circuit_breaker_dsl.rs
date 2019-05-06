@@ -18,7 +18,7 @@ state_machine! {
 }
 
 fn main() {
-    let machine: StateMachineWrapper<CircuitBreaker> = StateMachineWrapper::new();
+    let machine: StateMachine<CircuitBreaker> = StateMachine::new();
 
     // Unsuccessful request
     let machine = Arc::new(Mutex::new(machine));

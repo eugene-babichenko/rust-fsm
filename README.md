@@ -12,7 +12,7 @@ components:
   parses a simple DSL and generates all boilerplate code for the described
   state machine.
 
-The essential part of this crate is the [`StateMachine`] trait. This trait
+The essential part of this crate is the [`StateMachineImpl`] trait. This trait
 allows a developer to provide a strict state machine definition, e.g.
 specify its:
 
@@ -77,7 +77,7 @@ This state machine can be used as follows:
 
 ```rust
 // Initialize the state machine. The state is `Closed` now.
-let mut machine: StateMachineWrapper<CircuitBreaker> = StateMachineWrapper::new();
+let mut machine: StateMachine<CircuitBreaker> = StateMachine::new();
 // Consume the `Successful` input. No state transition is performed.
 let _ = machine.consume(&CircuitBreakerInput::Successful);
 // Consume the `Unsuccesful` input. The machine is moved to the `Open`
@@ -95,7 +95,7 @@ if machine.state() == &CircuitBreakerState::Open {
 
 As you can see, the following entities are generated:
 
-* An empty structure `CircuitBreaker` that implements the `StateMachine`
+* An empty structure `CircuitBreaker` that implements the `StateMachineImpl`
   trait.
 * Enums `CircuitBreakerState`, `CircuitBreakerInput` and
   `CircuitBreakerOutput` that represent the state, the input alphabet and
@@ -112,8 +112,8 @@ cannot carry any additional data), so in certain complex cases a user might
 want to write a more complex state machine by hand.
 
 All you need to do to build a state machine is to implement the
-`StateMachine` trait and use it in conjuctions with some of the provided
-wrappers (for now there is only `StateMachineWrapper`).
+`StateMachineImpl` trait and use it in conjuctions with some of the provided
+wrappers (for now there is only `StateMachine`).
 
 You can see an example of the Circuit Breaker state machine in the
 [project repository][repo].

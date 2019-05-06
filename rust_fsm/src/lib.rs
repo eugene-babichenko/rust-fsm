@@ -10,8 +10,8 @@
 //!   parses a simple DSL and generates all boilerplate code for the described
 //!   state machine.
 //!
-//! The essential part of this crate is the [`StateMachine`] trait. This trait
-//! allows a developer to provide a strict state machine definition, e.g.
+//! The essential part of this crate is the [`StateMachineImpl`] trait. This
+//! trait allows a developer to provide a strict state machine definition, e.g.
 //! specify its:
 //!
 //! * An input alphabet - a set of entities that the state machine takes as
@@ -75,7 +75,7 @@
 //!
 //! ```rust,ignore
 //! // Initialize the state machine. The state is `Closed` now.
-//! let mut machine: StateMachineWrapper<CircuitBreaker> = StateMachineWrapper::new();
+//! let mut machine: StateMachine<CircuitBreaker> = StateMachine::new();
 //! // Consume the `Successful` input. No state transition is performed.
 //! let _ = machine.consume(&CircuitBreakerInput::Successful);
 //! // Consume the `Unsuccesful` input. The machine is moved to the `Open`
@@ -93,7 +93,7 @@
 //!
 //! As you can see, the following entities are generated:
 //!
-//! * An empty structure `CircuitBreaker` that implements the `StateMachine`
+//! * An empty structure `CircuitBreaker` that implements the `StateMachineImpl`
 //!   trait.
 //! * Enums `CircuitBreakerState`, `CircuitBreakerInput` and
 //!   `CircuitBreakerOutput` that represent the state, the input alphabet and
@@ -110,8 +110,8 @@
 //! want to write a more complex state machine by hand.
 //!
 //! All you need to do to build a state machine is to implement the
-//! `StateMachine` trait and use it in conjuctions with some of the provided
-//! wrappers (for now there is only `StateMachineWrapper`).
+//! `StateMachineImpl` trait and use it in conjuctions with some of the provided
+//! wrappers (for now there is only `StateMachine`).
 //!
 //! You can see an example of the Circuit Breaker state machine in the
 //! [project repository][repo].
@@ -122,7 +122,7 @@
 /// machine/transducer. This is just a formal definition that may be
 /// inconvenient to be used in practical programming, but it is used throughout
 /// this library for more practical things.
-pub trait StateMachine {
+pub trait StateMachineImpl {
     /// The input alphabet.
     type Input;
     /// The set of possible states.
@@ -143,18 +143,18 @@ pub trait StateMachine {
 
 /// A convenience wrapper around the `StateMachine` trait that encapsulates the
 /// state and transition and output function calls.
-pub struct StateMachineWrapper<T: StateMachine> {
+pub struct StateMachine<T: StateMachineImpl> {
     state: T::State,
 }
 
-impl<T> StateMachineWrapper<T>
+impl<T> StateMachine<T>
 where
-    T: StateMachine,
+    T: StateMachineImpl,
 {
     /// Create a new instance of this wrapper which encapsulates the initial
     /// state.
     pub fn new() -> Self {
-        StateMachineWrapper {
+        Self {
             state: T::INITIAL_STATE,
         }
     }
@@ -181,9 +181,9 @@ where
     }
 }
 
-impl<T> Default for StateMachineWrapper<T>
+impl<T> Default for StateMachine<T>
 where
-    T: StateMachine,
+    T: StateMachineImpl,
 {
     fn default() -> Self {
         Self::new()

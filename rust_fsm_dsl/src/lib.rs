@@ -168,7 +168,7 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
 
         #outputs_repr
 
-        impl rust_fsm::StateMachine for #struct_name {
+        impl rust_fsm::StateMachineImpl for #struct_name {
             type Input = #inputs_enum_name;
             type State = #states_enum_name;
             type Output = #outputs_type;
