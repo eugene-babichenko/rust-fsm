@@ -163,16 +163,13 @@ where
     /// transition. If a state transition with the current state and the
     /// provided input is not allowed, returns an error.
     pub fn consume(&mut self, input: &T::Input) -> Result<Option<T::Output>, ()> {
-        // Operations are reodered for optimization. When the transition is not
-        // allowed this code exits as soon as possible without calculating the
-        // output.
-        let state = match T::transition(&self.state, input) {
-            Some(state) => state,
-            None => return Err(()),
-        };
-        let output = T::output(&self.state, input);
-        self.state = state;
-        Ok(output)
+        if let Some(state) = T::transition(&self.state, input) {
+            let output = T::output(&self.state, input);
+            self.state = state;
+            Ok(output)
+        } else {
+            Err(())
+        }
     }
 
     /// Returns the current state.
