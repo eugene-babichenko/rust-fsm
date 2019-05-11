@@ -8,41 +8,94 @@ use proc_macro::TokenStream;
 use quote::quote;
 use std::collections::HashSet;
 use syn::{
-    bracketed, parenthesized,
-    parse::{Parse, ParseStream, Result},
+    braced, bracketed, parenthesized,
+    parse::{Error, Parse, ParseStream, Result},
     parse_macro_input,
-    punctuated::Punctuated,
-    token::Bracket,
+    token::{Bracket, Paren},
     Ident, Token, Visibility,
 };
 
-struct TransitionDef {
-    initial_state: Ident,
+struct Output(Option<Ident>);
+
+impl Parse for Output {
+    fn parse(input: ParseStream) -> Result<Self> {
+        if input.lookahead1().peek(Bracket) {
+            let output_content;
+            bracketed!(output_content in input);
+            Ok(Self(Some(output_content.parse()?)))
+        } else {
+            Ok(Self(None))
+        }
+    }
+}
+
+impl Into<Option<Ident>> for Output {
+    fn into(self) -> Option<Ident> {
+        self.0
+    }
+}
+
+struct TransitionEntry {
     input_value: Ident,
     final_state: Ident,
     output: Option<Ident>,
 }
 
-impl Parse for TransitionDef {
+impl Parse for TransitionEntry {
     fn parse(input: ParseStream) -> Result<Self> {
-        let initial_state = input.parse()?;
-        let input_content;
-        parenthesized!(input_content in input);
-        let input_value = input_content.parse()?;
+        let input_value = input.parse()?;
         input.parse::<Token![=>]>()?;
         let final_state = input.parse()?;
-        let output = if input.lookahead1().peek(Bracket) {
-            let output_content;
-            bracketed!(output_content in input);
-            Some(output_content.parse()?)
-        } else {
-            None
-        };
+        let output = input.parse::<Output>()?.into();
         Ok(Self {
-            initial_state,
             input_value,
             final_state,
             output,
+        })
+    }
+}
+
+struct TransitionDef {
+    initial_state: Ident,
+    transitions: Vec<TransitionEntry>,
+}
+
+impl Parse for TransitionDef {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let initial_state = input.parse()?;
+        let transitions = if input.lookahead1().peek(Paren) {
+            let input_content;
+            parenthesized!(input_content in input);
+            let input_value = input_content.parse()?;
+            input.parse::<Token![=>]>()?;
+            let final_state = input.parse()?;
+            let output = input.parse::<Output>()?.into();
+
+            vec![TransitionEntry {
+                input_value,
+                final_state,
+                output,
+            }]
+        } else {
+            input.parse::<Token![=>]>()?;
+            let entries_content;
+            braced!(entries_content in input);
+
+            let entries: Vec<_> = entries_content
+                .parse_terminated::<_, Token![,]>(TransitionEntry::parse)?
+                .into_iter()
+                .collect();
+            if entries.is_empty() {
+                return Err(Error::new_spanned(
+                    initial_state,
+                    "No transitions provided for a compact representation",
+                ));
+            }
+            entries
+        };
+        Ok(Self {
+            initial_state,
+            transitions,
         })
     }
 }
@@ -51,17 +104,23 @@ struct StateMachineDef {
     visibility: Visibility,
     name: Ident,
     initial_state: Ident,
-    transitions: Punctuated<TransitionDef, Token![,]>,
+    transitions: Vec<TransitionDef>,
 }
 
 impl Parse for StateMachineDef {
     fn parse(input: ParseStream) -> Result<Self> {
         let visibility = input.parse()?;
         let name = input.parse()?;
+
         let initial_state_content;
         parenthesized!(initial_state_content in input);
         let initial_state = initial_state_content.parse()?;
-        let transitions = input.parse_terminated(TransitionDef::parse)?;
+
+        let transitions = input
+            .parse_terminated::<_, Token![,]>(TransitionDef::parse)?
+            .into_iter()
+            .collect();
+
         Ok(Self {
             visibility,
             name,
@@ -69,6 +128,13 @@ impl Parse for StateMachineDef {
             transitions,
         })
     }
+}
+
+struct Transition<'a> {
+    initial_state: &'a Ident,
+    input_value: &'a Ident,
+    final_state: &'a Ident,
+    output: &'a Option<Ident>,
 }
 
 #[proc_macro]
@@ -85,13 +151,26 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
     let struct_name = input.name;
     let visibility = input.visibility;
 
+    let transitions: Vec<_> = input
+        .transitions
+        .iter()
+        .flat_map(|def| {
+            def.transitions.iter().map(move |transition| Transition {
+                initial_state: &def.initial_state,
+                input_value: &transition.input_value,
+                final_state: &transition.final_state,
+                output: &transition.output,
+            })
+        })
+        .collect();
+
     let mut states = HashSet::new();
     let mut inputs = HashSet::new();
     let mut outputs = HashSet::new();
 
     states.insert(&input.initial_state);
 
-    for transition in input.transitions.iter() {
+    for transition in transitions.iter() {
         states.insert(&transition.initial_state);
         states.insert(&transition.final_state);
         inputs.insert(&transition.input_value);
@@ -106,7 +185,7 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
     let inputs_enum_name = Ident::new(&format!("{}Input", struct_name), struct_name.span());
 
     let mut transition_cases = vec![];
-    for transition in input.transitions.iter() {
+    for transition in transitions.iter() {
         let initial_state = &transition.initial_state;
         let input_value = &transition.input_value;
         let final_state = &transition.final_state;
@@ -129,7 +208,7 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
         let outputs_type = quote! { #outputs_type_name };
 
         let mut output_cases = vec![];
-        for transition in input.transitions.iter() {
+        for transition in transitions.iter() {
             if let Some(output_value) = &transition.output {
                 let initial_state = &transition.initial_state;
                 let input_value = &transition.input_value;

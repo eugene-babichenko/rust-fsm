@@ -58,8 +58,10 @@ state_machine! {
 
     Closed(Unsuccessful) => Open [SetupTimer],
     Open(TimerTriggered) => HalfOpen,
-    HalfOpen(Successful) => Closed,
-    HalfOpen(Unsuccessful) => Open [SetupTimer],
+    HalfOpen => {
+        Successful => Closed,
+        Unsuccessful => Open [SetupTimer],
+    }
 }
 ```
 

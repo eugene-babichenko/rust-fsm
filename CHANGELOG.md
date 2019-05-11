@@ -11,6 +11,8 @@ adheres to [Semantic Versioning][semver].
 * More clear naming:
   * Renamed the `StateMachineWrapper` structure to `StateMachine`;
   * Renamed the `StateMachine` trait to `StateMachineImpl`.
+* Allow to specify multiple transitions from the same state in a more compact
+  form. See the example for the details.
 
 ## [0.1.0] - 2019-04-29
 ### Added
