@@ -15,4 +15,4 @@ edition = "2018"
 travis-ci = { repository = "eugene-babichenko/rust-fsm" }
 
 [dev-dependencies]
-rust-fsm-dsl = { path = "../rust_fsm_dsl" }
+rust-fsm-dsl = { path = "../rust_fsm_dsl", version = "0.2.0" }
