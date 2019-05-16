@@ -5,14 +5,19 @@ The format is based on [Keep a Changelog][keepachangelog], and this project
 adheres to [Semantic Versioning][semver].
 
 ## [Unreleased]
+
+## [0.2.0] - 2019-05-16
+### Added
 * Allow setting visibitility for generated state machine types by putting a
   visibility modifier before the state machine name.
-* Removed the `consume_anyway` function.
+* Allow to specify multiple transitions from the same state in a more compact
+  form. See the example for the details.
+### Changed
 * More clear naming:
   * Renamed the `StateMachineWrapper` structure to `StateMachine`;
   * Renamed the `StateMachine` trait to `StateMachineImpl`.
-* Allow to specify multiple transitions from the same state in a more compact
-  form. See the example for the details.
+### Removed
+* Removed the `consume_anyway` function.
 
 ## [0.1.0] - 2019-04-29
 ### Added
@@ -30,5 +35,6 @@ adheres to [Semantic Versioning][semver].
 [keepachangelog]: https://keepachangelog.com/en/1.0.0/
 [semver]: https://semver.org/spec/v2.0.0.html
 
-[Unreleased]: https://github.com/eugene-babichenko/rust-fsm/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/eugene-babichenko/rust-fsm/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/eugene-babichenko/rust-fsm/compare/v0.1.0...0.2.0
 [0.1.0]: https://github.com/eugene-babichenko/rust-fsm/releases/tag/v0.1.0
