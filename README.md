@@ -3,14 +3,7 @@
 [![Build Status][build-badge]][build-link]
 
 The `rust-fsm` crate provides a simple and universal framework for building
-state machines in Rust with minimum effort. This is achieved by two
-components:
-
-* The `rust-fsm` crate, that provides data types for building state machines
-  and convenience wrappers for these types.
-* The `rust-fsm-dsl` crate, that contains the `state_machine` macro that
-  parses a simple DSL and generates all boilerplate code for the described
-  state machine.
+state machines in Rust with minimum effort.
 
 The essential part of this crate is the [`StateMachineImpl`] trait. This trait
 allows a developer to provide a strict state machine definition, e.g.
@@ -48,9 +41,6 @@ macros system).
 The DSL is parsed by the `state_machine` macro. Here is a little example.
 
 ```rust
-#[macro_use]
-extern crate rust_fsm_dsl;
-
 use rust_fsm::*;
 
 state_machine! {

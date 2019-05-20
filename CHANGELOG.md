@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog][keepachangelog], and this project
 adheres to [Semantic Versioning][semver].
 
 ## [Unreleased]
+### Changed
+* Re-organize repository to import a single crate instead of two.
 
 ## [0.2.0] - 2019-05-16
 ### Added

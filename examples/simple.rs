@@ -1,6 +1,3 @@
-#[macro_use]
-extern crate rust_fsm_dsl;
-
 use rust_fsm::*;
 
 state_machine! {

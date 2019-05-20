@@ -1,9 +1,6 @@
 /// A dummy implementation of the Circuit Breaker pattern to demonstrate
 /// capabilities of its library DSL for defining finite state machines.
 /// https://martinfowler.com/bliki/CircuitBreaker.html
-#[macro_use]
-extern crate rust_fsm_dsl;
-
 use rust_fsm::*;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;

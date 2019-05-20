@@ -1,14 +1,7 @@
 //! A framework for building finite state machines in Rust
 //!
 //! The `rust-fsm` crate provides a simple and universal framework for building
-//! state machines in Rust with minimum effort. This is achieved by two
-//! components:
-//!
-//! * The `rust-fsm` crate, that provides data types for building state machines
-//!   and convenience wrappers for these types.
-//! * The `rust-fsm-dsl` crate, that contains the `state_machine` macro that
-//!   parses a simple DSL and generates all boilerplate code for the described
-//!   state machine.
+//! state machines in Rust with minimum effort.
 //!
 //! The essential part of this crate is the [`StateMachineImpl`] trait. This
 //! trait allows a developer to provide a strict state machine definition, e.g.
@@ -46,9 +39,6 @@
 //! The DSL is parsed by the `state_machine` macro. Here is a little example.
 //!
 //! ```rust,ignore
-//! #[macro_use]
-//! extern crate rust_fsm_dsl;
-//!
 //! use rust_fsm::*;
 //!
 //! state_machine! {
@@ -119,6 +109,9 @@
 //! [project repository][repo].
 //!
 //! [repo]: https://github.com/eugene-babichenko/rust-fsm/blob/master/examples/circuit_breaker.rs
+
+#[doc(hidden)]
+pub use rust_fsm_dsl::*;
 
 /// This trait is designed to describe any possible deterministic finite state
 /// machine/transducer. This is just a formal definition that may be
