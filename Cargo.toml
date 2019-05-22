@@ -3,6 +3,7 @@ name = "rust-fsm"
 description = "A framework for building finite state machines in Rust"
 repository = "https://github.com/eugene-babichenko/rust-fsm"
 homepage = "https://github.com/eugene-babichenko/rust-fsm"
+documentation = "https://docs.rs/rust-fsm/"
 readme = "README.md"
 license = "MIT"
 categories = ["data-structures", "rust-patterns"]

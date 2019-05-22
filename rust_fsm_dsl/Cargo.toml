@@ -3,6 +3,7 @@ name = "rust-fsm-dsl"
 description = "Macros for rust-fsm DSL"
 repository = "https://github.com/eugene-babichenko/rust-fsm"
 homepage = "https://github.com/eugene-babichenko/rust-fsm"
+documentation = "https://docs.rs/rust-fsm-dsl/"
 readme = "../README.md"
 license = "MIT"
 categories = ["data-structures", "rust-patterns"]
