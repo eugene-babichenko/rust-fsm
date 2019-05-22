@@ -18,5 +18,5 @@ travis-ci = { repository = "eugene-babichenko/rust-fsm" }
 proc-macro = true
 
 [dependencies]
-syn = "*"
-quote = "*"
+syn = "0.15"
+quote = "0.6"
