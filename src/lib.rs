@@ -3,9 +3,9 @@
 //! The `rust-fsm` crate provides a simple and universal framework for building
 //! state machines in Rust with minimum effort.
 //!
-//! The essential part of this crate is the [`StateMachineImpl`] trait. This
-//! trait allows a developer to provide a strict state machine definition, e.g.
-//! specify its:
+//! The essential part of this crate is the
+//! [`StateMachineImpl`](trait.StateMachineImpl.html) trait. This trait allows a
+//! developer to provide a strict state machine definition, e.g. specify its:
 //!
 //! * An input alphabet - a set of entities that the state machine takes as
 //!   inputs and performs state transitions based on them.

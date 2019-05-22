@@ -5,7 +5,7 @@
 The `rust-fsm` crate provides a simple and universal framework for building
 state machines in Rust with minimum effort.
 
-The essential part of this crate is the [`StateMachineImpl`] trait. This trait
+The essential part of this crate is the `StateMachineImpl` trait. This trait
 allows a developer to provide a strict state machine definition, e.g.
 specify its:
 
