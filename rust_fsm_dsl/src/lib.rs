@@ -15,6 +15,7 @@ use syn::{
     Ident, Token, Visibility,
 };
 
+/// The output of a state transition
 struct Output(Option<Ident>);
 
 impl Parse for Output {
@@ -35,6 +36,8 @@ impl Into<Option<Ident>> for Output {
     }
 }
 
+/// Represents a part of state transition without the initial state. The `Parse`
+/// trait is implemented for the compact form.
 struct TransitionEntry {
     input_value: Ident,
     final_state: Ident,
@@ -55,6 +58,7 @@ impl Parse for TransitionEntry {
     }
 }
 
+/// Parses the transition in any of the possible formats.
 struct TransitionDef {
     initial_state: Ident,
     transitions: Vec<TransitionEntry>,
@@ -63,6 +67,8 @@ struct TransitionDef {
 impl Parse for TransitionDef {
     fn parse(input: ParseStream) -> Result<Self> {
         let initial_state = input.parse()?;
+        // Parse the transition in the simple format
+        // InitialState(Input) => ResultState [Output]
         let transitions = if input.lookahead1().peek(Paren) {
             let input_content;
             parenthesized!(input_content in input);
@@ -77,6 +83,11 @@ impl Parse for TransitionDef {
                 output,
             }]
         } else {
+            // Parse the transition in the compact format
+            // InitialState => {
+            //     Input1 => State1,
+            //     Input2 => State2 [Output]
+            // }
             input.parse::<Token![=>]>()?;
             let entries_content;
             braced!(entries_content in input);
@@ -100,7 +111,22 @@ impl Parse for TransitionDef {
     }
 }
 
+/// Parses the whole state machine definition in the following form (example):
+/// 
+/// ```rust,ignore
+/// state_machine! {
+///     CircuitBreaker(Closed)
+///
+///     Closed(Unsuccessful) => Open [SetupTimer],
+///     Open(TimerTriggered) => HalfOpen,
+///     HalfOpen => {
+///         Successful => Closed,
+///         Unsuccessful => Open [SetupTimer]
+///     }
+/// }
+/// ```
 struct StateMachineDef {
+    /// The visibility modifier (applies to all generated items)
     visibility: Visibility,
     name: Ident,
     initial_state: Ident,
@@ -130,6 +156,8 @@ impl Parse for StateMachineDef {
     }
 }
 
+/// The full information about a state transition. Used to unify the
+/// represantion of the simple and the compact forms.
 struct Transition<'a> {
     initial_state: &'a Ident,
     input_value: &'a Ident,
