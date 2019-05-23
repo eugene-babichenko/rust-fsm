@@ -155,9 +155,7 @@ where
     /// Create a new instance of this wrapper which encapsulates the given
     /// state.
     pub fn from_state(state: T::State) -> Self {
-        Self {
-            state
-        }
+        Self { state }
     }
 
     /// Consumes the provided input, gives an output and performs a state
