@@ -118,7 +118,7 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
     let output = quote! {
         #visibility struct #struct_name;
 
-        #[derive(Clone, Copy, Debug, PartialEq)]
+        #[derive(Debug, PartialEq)]
         #visibility enum #states_enum_name {
             #(#states),*
         }

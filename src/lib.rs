@@ -121,7 +121,7 @@ pub trait StateMachineImpl {
     /// The input alphabet.
     type Input;
     /// The set of possible states.
-    type State: Copy;
+    type State;
     /// The output alphabet.
     type Output;
     /// The initial state of the machine.
