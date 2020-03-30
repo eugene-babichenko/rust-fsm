@@ -127,6 +127,8 @@ pub trait StateMachineImpl {
     /// The output alphabet.
     type Output;
     /// The initial state of the machine.
+    // allow since there is usually no interior mutability because states are enums
+    #[allow(clippy::declare_interior_mutable_const)]
     const INITIAL_STATE: Self::State;
     /// The transition fuction that outputs a new state based on the current
     /// state and the provided input. Outputs `None` when there is no transition
