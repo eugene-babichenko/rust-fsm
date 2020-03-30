@@ -42,6 +42,7 @@
 //! use rust_fsm::*;
 //!
 //! state_machine! {
+//!     derive(Debug)
 //!     CircuitBreaker(Closed)
 //!
 //!     Closed(Unsuccessful) => Open [SetupTimer],
@@ -56,6 +57,7 @@
 //! This code sample:
 //!
 //! * Defines a state machine called `CircuitBreaker`;
+//! * Derives the `Debug` trait for it (the `derive` section is optional);
 //! * Sets the initial state of this state machine to `Closed`;
 //! * Defines state transitions. For example: on receiving the `Successful`
 //!   input when in the `HalfOpen` state, the machine must move to the `Closed`

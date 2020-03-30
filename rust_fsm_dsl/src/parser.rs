@@ -5,6 +5,10 @@ use syn::{
     Ident, Token, Visibility,
 };
 
+mod kw {
+    syn::custom_keyword!(derive);
+}
+
 /// The output of a state transition
 pub struct Output(Option<Ident>);
 
@@ -101,6 +105,32 @@ impl Parse for TransitionDef {
     }
 }
 
+struct Derives {
+    derives: Option<Vec<Ident>>,
+}
+
+impl Parse for Derives {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let lookahead = input.lookahead1();
+        if lookahead.peek(kw::derive) {
+            let kw_derive = input.parse::<kw::derive>()?;
+            let entries_content;
+            parenthesized!(entries_content in input);
+            let entries: Vec<_> = entries_content
+                .parse_terminated::<_, Token![,]>(Ident::parse)?
+                .into_iter()
+                .collect();
+            if entries.is_empty() {
+                return Err(Error::new_spanned(kw_derive, "Derive list cannot be empty"));
+            }
+            return Ok(Derives {
+                derives: Some(entries),
+            });
+        }
+        Ok(Derives { derives: None })
+    }
+}
+
 /// Parses the whole state machine definition in the following form (example):
 ///
 /// ```rust,ignore
@@ -121,10 +151,13 @@ pub struct StateMachineDef {
     pub name: Ident,
     pub initial_state: Ident,
     pub transitions: Vec<TransitionDef>,
+    pub derives: Option<Vec<Ident>>,
 }
 
 impl Parse for StateMachineDef {
     fn parse(input: ParseStream) -> Result<Self> {
+        let Derives { derives } = input.parse()?;
+
         let visibility = input.parse()?;
         let name = input.parse()?;
 
@@ -142,6 +175,7 @@ impl Parse for StateMachineDef {
             name,
             initial_state,
             transitions,
+            derives,
         })
     }
 }

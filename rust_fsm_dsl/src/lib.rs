@@ -24,6 +24,12 @@ struct Transition<'a> {
 pub fn state_machine(tokens: TokenStream) -> TokenStream {
     let input = parse_macro_input!(tokens as parser::StateMachineDef);
 
+    let derives = if let Some(derives) = input.derives {
+        quote! { #[derive(#(#derives,)*)] }
+    } else {
+        quote! {}
+    };
+
     if input.transitions.is_empty() {
         let output = quote! {
             compile_error!("rust-fsm: at least one state transition must be provided");
@@ -82,7 +88,7 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
     let (outputs_repr, outputs_type, output_impl) = if !outputs.is_empty() {
         let outputs_type_name = Ident::new(&format!("{}Output", struct_name), struct_name.span());
         let outputs_repr = quote! {
-            #[derive(Debug, PartialEq)]
+            #derives
             #visibility enum #outputs_type_name {
                 #(#outputs),*
             }
@@ -116,14 +122,15 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
     };
 
     let output = quote! {
+        #derives
         #visibility struct #struct_name;
 
-        #[derive(Debug, PartialEq)]
+        #derives
         #visibility enum #states_enum_name {
             #(#states),*
         }
 
-        #[derive(Debug, PartialEq)]
+        #derives
         #visibility enum #inputs_enum_name {
             #(#inputs),*
         }

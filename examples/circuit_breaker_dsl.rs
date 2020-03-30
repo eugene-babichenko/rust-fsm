@@ -24,8 +24,8 @@ fn main() {
     {
         let mut lock = machine.lock().unwrap();
         let res = lock.consume(&CircuitBreakerInput::Unsuccessful).unwrap();
-        assert_eq!(res, Some(CircuitBreakerOutput::SetupTimer));
-        assert_eq!(lock.state(), &CircuitBreakerState::Open);
+        assert!(matches!(res, Some(CircuitBreakerOutput::SetupTimer)));
+        assert!(matches!(lock.state(), &CircuitBreakerState::Open));
     }
 
     // Set up a timer
@@ -34,8 +34,8 @@ fn main() {
         std::thread::sleep(Duration::new(5, 0));
         let mut lock = machine_wait.lock().unwrap();
         let res = lock.consume(&CircuitBreakerInput::TimerTriggered).unwrap();
-        assert_eq!(res, None);
-        assert_eq!(lock.state(), &CircuitBreakerState::HalfOpen);
+        assert!(matches!(res, None));
+        assert!(matches!(lock.state(), &CircuitBreakerState::HalfOpen));
     });
 
     // Try to pass a request when the circuit breaker is still open
@@ -44,8 +44,8 @@ fn main() {
         std::thread::sleep(Duration::new(1, 0));
         let mut lock = machine_try.lock().unwrap();
         let res = lock.consume(&CircuitBreakerInput::Successful);
-        assert_eq!(res, Err(()));
-        assert_eq!(lock.state(), &CircuitBreakerState::Open);
+        assert!(matches!(res, Err(())));
+        assert!(matches!(lock.state(), &CircuitBreakerState::Open));
     });
 
     // Test if the circit breaker was actually closed
@@ -53,7 +53,7 @@ fn main() {
     {
         let mut lock = machine.lock().unwrap();
         let res = lock.consume(&CircuitBreakerInput::Successful).unwrap();
-        assert_eq!(res, None);
-        assert_eq!(lock.state(), &CircuitBreakerState::Closed);
+        assert!(matches!(res, None));
+        assert!(matches!(lock.state(), &CircuitBreakerState::Closed));
     }
 }

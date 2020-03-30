@@ -1,6 +1,7 @@
 use rust_fsm::*;
 
 state_machine! {
+    derive(Debug)
     Door(Open)
 
     Open(Key) => Closed,
