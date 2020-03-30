@@ -10,7 +10,8 @@ state_machine! {
     Closed(Break) => Broken,
 }
 
-fn main() {
+#[test]
+fn simple() {
     let mut machine: StateMachine<Door> = StateMachine::new();
     machine.consume(&DoorInput::Key).unwrap();
     println!("{:?}", machine.state());

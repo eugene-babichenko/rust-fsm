@@ -110,7 +110,7 @@
 //! You can see an example of the Circuit Breaker state machine in the
 //! [project repository][repo].
 //!
-//! [repo]: https://github.com/eugene-babichenko/rust-fsm/blob/master/examples/circuit_breaker.rs
+//! [repo]: https://github.com/eugene-babichenko/rust-fsm/blob/master/tests/circuit_breaker.rs
 
 #[doc(hidden)]
 pub use rust_fsm_dsl::*;

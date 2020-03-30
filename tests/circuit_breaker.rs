@@ -62,7 +62,8 @@ impl StateMachineImpl for CircuitBreakerMachine {
     }
 }
 
-fn main() {
+#[test]
+fn circuit_breaker() {
     let machine: StateMachine<CircuitBreakerMachine> = StateMachine::new();
 
     // Unsuccessful request

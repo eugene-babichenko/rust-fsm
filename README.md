@@ -114,7 +114,7 @@ wrappers (for now there is only `StateMachine`).
 You can see an example of the Circuit Breaker state machine in the
 [project repository][repo].
 
-[repo]: https://github.com/eugene-babichenko/rust-fsm/blob/master/examples/circuit_breaker.rs
+[repo]: https://github.com/eugene-babichenko/rust-fsm/blob/master/tests/circuit_breaker.rs
 [docs-badge]: https://docs.rs/rust-fsm/badge.svg
 [docs-link]: https://docs.rs/rust-fsm
 [crate-badge]: https://img.shields.io/crates/v/rust-fsm.svg

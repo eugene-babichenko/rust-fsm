@@ -16,7 +16,8 @@ state_machine! {
     }
 }
 
-fn main() {
+#[test]
+fn circit_breaker_dsl() {
     let machine: StateMachine<CircuitBreaker> = StateMachine::new();
 
     // Unsuccessful request
