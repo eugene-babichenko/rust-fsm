@@ -142,6 +142,7 @@ pub trait StateMachineImpl {
 
 /// A convenience wrapper around the `StateMachine` trait that encapsulates the
 /// state and transition and output function calls.
+#[derive(Debug)]
 pub struct StateMachine<T: StateMachineImpl> {
     state: T::State,
 }
