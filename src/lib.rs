@@ -1,3 +1,4 @@
+#![no_std]
 //! A framework for building finite state machines in Rust
 //!
 //! The `rust-fsm` crate provides a simple and universal framework for building
