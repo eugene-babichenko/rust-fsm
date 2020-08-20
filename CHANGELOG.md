@@ -7,6 +7,7 @@ adheres to [Semantic Versioning][semver].
 ## [Unreleased]
 ### Added
 * Add the `from_state` method to start the machine from any given state.
+* `no_std` support.
 
 ## [0.3.0] - 2019-05-22
 ### Changed
