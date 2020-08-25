@@ -15,5 +15,8 @@ edition = "2018"
 [dependencies]
 rust-fsm-dsl = { path = "./rust_fsm_dsl", version = "0.3.0" }
 
+[profile.dev]
+panic = "abort"
+
 [workspace]
-members = [".", "rust_fsm_dsl"]
+members = [".", "rust_fsm_dsl", "ensure_no_std"]
