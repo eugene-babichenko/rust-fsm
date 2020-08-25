@@ -2,7 +2,6 @@
 
 [![Documentation][docs-badge]][docs-link]
 [![Latest Version][crate-badge]][crate-link]
-[![Build Status][build-badge]][build-link]
 
 The `rust-fsm` crate provides a simple and universal framework for building
 state machines in Rust with minimum effort.
@@ -119,5 +118,3 @@ You can see an example of the Circuit Breaker state machine in the
 [docs-link]: https://docs.rs/rust-fsm
 [crate-badge]: https://img.shields.io/crates/v/rust-fsm.svg
 [crate-link]: https://crates.io/crates/rust-fsm
-[build-badge]: https://travis-ci.org/eugene-babichenko/rust-fsm.svg?branch=master
-[build-link]: https://travis-ci.org/eugene-babichenko/rust-fsm

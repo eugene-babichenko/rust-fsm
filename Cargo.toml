@@ -12,9 +12,6 @@ version = "0.3.0"
 authors = ["Yevhenii Babichenko"]
 edition = "2018"
 
-[badges]
-travis-ci = { repository = "eugene-babichenko/rust-fsm" }
-
 [dependencies]
 rust-fsm-dsl = { path = "./rust_fsm_dsl", version = "0.3.0" }
 
