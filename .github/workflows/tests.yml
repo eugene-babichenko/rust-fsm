@@ -27,7 +27,7 @@ jobs:
       - name: Run cargo clippy
         uses: actions-rs/cargo@v1
         with:
-          command: clippy        
+          command: clippy
 
       - name: Ensure the library compiles in a no_std env
         uses: actions-rs/cargo@v1
