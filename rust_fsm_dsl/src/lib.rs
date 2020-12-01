@@ -9,7 +9,7 @@ use quote::quote;
 use std::collections::HashSet;
 use syn::{parse_macro_input, Ident};
 
-mod parser;
+pub mod parser;
 
 /// The full information about a state transition. Used to unify the
 /// represantion of the simple and the compact forms.
