@@ -31,9 +31,12 @@
 //!
 //! This library has the feature named `std` which is enabled by default. You
 //! may want to import this library as
-//! `rust-fsm = { version = "0.5", default-features = false }` to use it in a
-//! `no_std` environment. This only affects error types (the `Error` trait is
-//! only available in `std`).
+//! `rust-fsm = { version = "0.5", default-features = false, features = ["dsl"] }`
+//! to use it in a `no_std` environment. This only affects error types (the
+//! `Error` trait is only available in `std`).
+//!
+//! The DSL implementation re-export is gated by the feature named `dsl` which
+//! is also enabled by default.
 //!
 //! # Use
 //!
@@ -126,6 +129,7 @@ use core::fmt;
 #[cfg(feature = "std")]
 use std::error::Error;
 
+#[cfg(feature = "dsl")]
 pub use rust_fsm_dsl::state_machine;
 
 /// This trait is designed to describe any possible deterministic finite state

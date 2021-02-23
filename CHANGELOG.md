@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog][keepachangelog], and this project
 adheres to [Semantic Versioning][semver].
 
 ## [Unreleased]
+### Added
+* The re-export of the DSL implementation is gated by the `dsl` feature which is
+  enabled by default.
 ### Changed
 * State transition error is now represented with `TransitionImpossibleError`
   instead of `()`.

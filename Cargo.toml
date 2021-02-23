@@ -13,11 +13,12 @@ authors = ["Yevhenii Babichenko"]
 edition = "2018"
 
 [features]
-default = ["std"]
+default = ["std", "dsl"]
 std = []
+dsl = ["rust-fsm-dsl"]
 
 [dependencies]
-rust-fsm-dsl = { path = "./rust_fsm_dsl", version = "0.4.0" }
+rust-fsm-dsl = { path = "./rust_fsm_dsl", version = "0.4.0", optional = true }
 
 [profile.dev]
 panic = "abort"
