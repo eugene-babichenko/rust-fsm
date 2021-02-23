@@ -32,8 +32,8 @@ jobs:
       - name: Ensure the library compiles in a no_std env
         uses: actions-rs/cargo@v1
         with:
-          command: rustc
-          args: --manifest-path ensure_no_std/Cargo.toml -- -C link-arg=-nostartfiles
+          command: build
+          args: --no-default-features
 
       - name: Run tests
         uses: actions-rs/cargo@v1
