@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog][keepachangelog], and this project
 adheres to [Semantic Versioning][semver].
 
 ## [Unreleased]
+### Changed
+* State transition error is now represented with `TransitionImpossibleError`
+  instead of `()`.
 
 ## [0.4.0] - 2020-08-25
 ### Added

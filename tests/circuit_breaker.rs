@@ -91,7 +91,7 @@ fn circuit_breaker() {
         std::thread::sleep(Duration::new(1, 0));
         let mut lock = machine_try.lock().unwrap();
         let res = lock.consume(&CircuitBreakerInput::Successful);
-        assert_eq!(res, Err(()));
+        assert!(matches!(res, Err(TransitionImpossibleError)));
         assert_eq!(lock.state(), &CircuitBreakerState::Open);
     });
 

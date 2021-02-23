@@ -113,6 +113,8 @@
 //!
 //! [repo]: https://github.com/eugene-babichenko/rust-fsm/blob/master/tests/circuit_breaker.rs
 
+use core::fmt;
+
 #[doc(hidden)]
 pub use rust_fsm_dsl::*;
 
@@ -147,6 +149,11 @@ pub struct StateMachine<T: StateMachineImpl> {
     state: T::State,
 }
 
+#[derive(Debug, Clone)]
+/// An error type that represents that the state transition is impossible given
+/// the current combination of state and input.
+pub struct TransitionImpossibleError;
+
 impl<T> StateMachine<T>
 where
     T: StateMachineImpl,
@@ -166,13 +173,16 @@ where
     /// Consumes the provided input, gives an output and performs a state
     /// transition. If a state transition with the current state and the
     /// provided input is not allowed, returns an error.
-    pub fn consume(&mut self, input: &T::Input) -> Result<Option<T::Output>, ()> {
+    pub fn consume(
+        &mut self,
+        input: &T::Input,
+    ) -> Result<Option<T::Output>, TransitionImpossibleError> {
         if let Some(state) = T::transition(&self.state, input) {
             let output = T::output(&self.state, input);
             self.state = state;
             Ok(output)
         } else {
-            Err(())
+            Err(TransitionImpossibleError)
         }
     }
 
@@ -188,5 +198,14 @@ where
 {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+impl fmt::Display for TransitionImpossibleError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "cannot perform a state transition from the current state with the provided input"
+        )
     }
 }

@@ -45,7 +45,7 @@ fn circit_breaker_dsl() {
         std::thread::sleep(Duration::new(1, 0));
         let mut lock = machine_try.lock().unwrap();
         let res = lock.consume(&CircuitBreakerInput::Successful);
-        assert!(matches!(res, Err(())));
+        assert!(matches!(res, Err(TransitionImpossibleError)));
         assert!(matches!(lock.state(), &CircuitBreakerState::Open));
     });
 
