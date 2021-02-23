@@ -12,6 +12,10 @@ version = "0.4.0"
 authors = ["Yevhenii Babichenko"]
 edition = "2018"
 
+[features]
+default = ["std"]
+std = []
+
 [dependencies]
 rust-fsm-dsl = { path = "./rust_fsm_dsl", version = "0.4.0" }
 

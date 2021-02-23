@@ -8,6 +8,9 @@ adheres to [Semantic Versioning][semver].
 ### Changed
 * State transition error is now represented with `TransitionImpossibleError`
   instead of `()`.
+* The library is not `no_std` by default due to the use of `std::error::Error`.
+  Users should disable the new `std` feature to use this library in a `no_std`
+  environment.
 
 ## [0.4.0] - 2020-08-25
 ### Added

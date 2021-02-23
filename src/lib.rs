@@ -1,4 +1,3 @@
-#![no_std]
 //! A framework for building finite state machines in Rust
 //!
 //! The `rust-fsm` crate provides a simple and universal framework for building
@@ -27,6 +26,14 @@
 //! * A Mealy machine by providing all entities listed above.
 //! * A Moore machine by providing an output function that do not depend on the
 //!   provided inputs.
+//!
+//! # Usage in `no_std` environments
+//!
+//! This library has the feature named `std` which is enabled by default. You
+//! may want to import this library as
+//! `rust-fsm = { version = "0.5", default-features = false }` to use it in a
+//! `no_std` environment. This only affects error types (the `Error` trait is
+//! only available in `std`).
 //!
 //! # Use
 //!
@@ -113,7 +120,11 @@
 //!
 //! [repo]: https://github.com/eugene-babichenko/rust-fsm/blob/master/tests/circuit_breaker.rs
 
+#![cfg_attr(not(feature = "std"), no_std)]
+
 use core::fmt;
+#[cfg(feature = "std")]
+use std::error::Error;
 
 #[doc(hidden)]
 pub use rust_fsm_dsl::*;
@@ -207,5 +218,12 @@ impl fmt::Display for TransitionImpossibleError {
             f,
             "cannot perform a state transition from the current state with the provided input"
         )
+    }
+}
+
+#[cfg(feature = "std")]
+impl Error for TransitionImpossibleError {
+    fn source(&self) -> Option<&(dyn Error + 'static)> {
+        None
     }
 }

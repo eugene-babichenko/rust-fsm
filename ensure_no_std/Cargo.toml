@@ -5,4 +5,4 @@ authors = ["Yevhenii Babichenko <eugene.babichenko@protonmail.com>"]
 edition = "2018"
 
 [dependencies]
-rust-fsm = { path = ".." }
+rust-fsm = { path = "..", default-features = false }
