@@ -126,8 +126,7 @@ use core::fmt;
 #[cfg(feature = "std")]
 use std::error::Error;
 
-#[doc(hidden)]
-pub use rust_fsm_dsl::*;
+pub use rust_fsm_dsl::state_machine;
 
 /// This trait is designed to describe any possible deterministic finite state
 /// machine/transducer. This is just a formal definition that may be

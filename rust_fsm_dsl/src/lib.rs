@@ -21,6 +21,8 @@ struct Transition<'a> {
 }
 
 #[proc_macro]
+/// Produce a state machine definition from the provided `rust-fmt` DSL
+/// description.
 pub fn state_machine(tokens: TokenStream) -> TokenStream {
     let input = parse_macro_input!(tokens as parser::StateMachineDef);
 
