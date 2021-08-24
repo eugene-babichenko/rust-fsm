@@ -6,6 +6,10 @@ adheres to [Semantic Versioning][semver].
 
 ## [Unreleased]
 
+## [0.6.0] - 2021-08-24
+### Changed
+* Updated to `1.x` versions of `syn` and `quote`.
+
 ## [0.5.0] - 2021-02-23
 ### Added
 * The re-export of the DSL implementation is gated by the `dsl` feature which is
@@ -59,7 +63,8 @@ adheres to [Semantic Versioning][semver].
 [keepachangelog]: https://keepachangelog.com/en/1.0.0/
 [semver]: https://semver.org/spec/v2.0.0.html
 
-[Unreleased]: https://github.com/eugene-babichenko/rust-fsm/compare/v0.5.0...HEAD
+[Unreleased]: https://github.com/eugene-babichenko/rust-fsm/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/eugene-babichenko/rust-fsm/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/eugene-babichenko/rust-fsm/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/eugene-babichenko/rust-fsm/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/eugene-babichenko/rust-fsm/compare/v0.2.0...0.3.0

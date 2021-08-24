@@ -6,7 +6,7 @@ extern crate proc_macro;
 
 use proc_macro::TokenStream;
 use quote::quote;
-use std::collections::HashSet;
+use std::collections::BTreeSet;
 use syn::{parse_macro_input, Ident};
 
 mod parser;
@@ -55,9 +55,9 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
         })
         .collect();
 
-    let mut states = HashSet::new();
-    let mut inputs = HashSet::new();
-    let mut outputs = HashSet::new();
+    let mut states = BTreeSet::new();
+    let mut inputs = BTreeSet::new();
+    let mut outputs = BTreeSet::new();
 
     states.insert(&input.initial_state);
 
