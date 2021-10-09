@@ -24,9 +24,9 @@ impl Parse for Output {
     }
 }
 
-impl Into<Option<Ident>> for Output {
-    fn into(self) -> Option<Ident> {
-        self.0
+impl From<Output> for Option<Ident> {
+    fn from(output: Output) -> Self {
+        output.0
     }
 }
 

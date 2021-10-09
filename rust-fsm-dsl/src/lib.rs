@@ -62,9 +62,9 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
     states.insert(&input.initial_state);
 
     for transition in transitions.iter() {
-        states.insert(&transition.initial_state);
-        states.insert(&transition.final_state);
-        inputs.insert(&transition.input_value);
+        states.insert(transition.initial_state);
+        states.insert(transition.final_state);
+        inputs.insert(transition.input_value);
         if let Some(ref output) = transition.output {
             outputs.insert(output);
         }
