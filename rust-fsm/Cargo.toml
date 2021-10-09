@@ -1,0 +1,24 @@
+[package]
+name = "rust-fsm"
+description = "A framework for building finite state machines in Rust"
+repository = "https://github.com/eugene-babichenko/rust-fsm"
+homepage = "https://github.com/eugene-babichenko/rust-fsm"
+documentation = "https://docs.rs/rust-fsm/"
+readme = "README.md"
+license = "MIT"
+categories = ["data-structures", "rust-patterns"]
+keywords = ["fsm"]
+version = "0.6.0"
+authors = ["Yevhenii Babichenko"]
+edition = "2018"
+
+[features]
+default = ["std", "dsl"]
+std = []
+dsl = ["rust-fsm-dsl"]
+
+[dependencies]
+rust-fsm-dsl = { path = "../rust-fsm-dsl", version = "0.6.0", optional = true }
+
+[profile.dev]
+panic = "abort"

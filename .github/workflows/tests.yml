@@ -33,7 +33,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --no-default-features --features "dsl"
+          args: -p rust-fsm --no-default-features --features "dsl"
 
       - name: Run tests
         uses: actions-rs/cargo@v1
