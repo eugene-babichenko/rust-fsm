@@ -85,13 +85,13 @@
 //! let _ = machine.consume(&CircuitBreakerInput::Successful);
 //! // Consume the `Unsuccesful` input. The machine is moved to the `Open`
 //! // state. The output is `SetupTimer`.
-//! let output = machine.consume(&CircuitBreakerInput::Unsuccesful).unwrap();
+//! let output = machine.consume(&CircuitBreakerInput::Unsuccessful).unwrap();
 //! // Check the output
-//! if output == Some(CircuitBreakerOutput::SetupTimer) {
+//! if let Some(CircuitBreakerOutput::SetupTimer) = output {
 //!     // Set up the timer...
 //! }
 //! // Check the state
-//! if machine.state() == &CircuitBreakerState::Open {
+//! if let CircuitBreakerState::Open = machine.state() {
 //!     // Do something...
 //! }
 //! ```
