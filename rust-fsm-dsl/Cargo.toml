@@ -8,7 +8,7 @@ readme = "../README.md"
 license = "MIT"
 categories = ["data-structures", "rust-patterns"]
 keywords = ["fsm"]
-version = "0.6.0"
+version = "0.6.1"
 authors = ["Yevhenii Babichenko"]
 edition = "2018"
 
@@ -18,3 +18,6 @@ proc-macro = true
 [dependencies]
 syn = "1"
 quote = "1"
+
+[features]
+repr_c = []

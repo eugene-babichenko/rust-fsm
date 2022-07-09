@@ -32,6 +32,11 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
         quote! {}
     };
 
+    #[cfg(feature = "repr_c")]
+    let type_repr = quote! { #[repr(C)] };
+    #[cfg(not(feature = "repr_c"))]
+    let type_repr = quote! { };
+
     if input.transitions.is_empty() {
         let output = quote! {
             compile_error!("rust-fsm: at least one state transition must be provided");
@@ -91,6 +96,7 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
         let outputs_type_name = Ident::new(&format!("{}Output", struct_name), struct_name.span());
         let outputs_repr = quote! {
             #derives
+            #type_repr
             #visibility enum #outputs_type_name {
                 #(#outputs),*
             }
@@ -125,14 +131,17 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
 
     let output = quote! {
         #derives
+        #type_repr
         #visibility struct #struct_name;
 
         #derives
+        #type_repr
         #visibility enum #states_enum_name {
             #(#states),*
         }
 
         #derives
+        #type_repr
         #visibility enum #inputs_enum_name {
             #(#inputs),*
         }
