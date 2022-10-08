@@ -18,7 +18,7 @@ std = []
 dsl = ["rust-fsm-dsl"]
 
 [dependencies]
-rust-fsm-dsl = { path = "../rust-fsm-dsl", version = "0.6.1", optional = true }
+rust-fsm-dsl = { path = "../rust-fsm-dsl", version = "0.6.0", optional = true }
 
 [profile.dev]
 panic = "abort"

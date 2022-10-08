@@ -32,10 +32,11 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
         quote! {}
     };
 
-    #[cfg(feature = "repr_c")]
-    let type_repr = quote! { #[repr(C)] };
-    #[cfg(not(feature = "repr_c"))]
-    let type_repr = quote! { };
+    let type_repr = if let Some(true) = input.repr_c {
+        quote! { #[repr(C)] }
+    } else {
+        quote! {}
+    };
 
     if input.transitions.is_empty() {
         let output = quote! {
