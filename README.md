@@ -57,6 +57,7 @@ use rust_fsm::*;
 
 state_machine! {
     derive(Debug)
+    repr_c(true)
     CircuitBreaker(Closed)
 
     Closed(Unsuccessful) => Open [SetupTimer],
@@ -72,6 +73,8 @@ This code sample:
 
 * Defines a state machine called `CircuitBreaker`;
 * Derives the `Debug` trait for it (the `derive` section is optional);
+* Adds repr(C) support to generated code for better FFI compatability 
+  (the `repr_c` section is optional and defaults to false);
 * Sets the initial state of this state machine to `Closed`;
 * Defines state transitions. For example: on receiving the `Successful`
   input when in the `HalfOpen` state, the machine must move to the `Closed`

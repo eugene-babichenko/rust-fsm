@@ -7,6 +7,7 @@ use syn::{
 
 mod kw {
     syn::custom_keyword!(derive);
+    syn::custom_keyword!(repr_c);
 }
 
 /// The output of a state transition
@@ -105,6 +106,34 @@ impl Parse for TransitionDef {
     }
 }
 
+
+struct ReprC {
+    repr_c: Option<bool>,
+}
+
+impl Parse for ReprC {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let lookahead = input.lookahead1();
+        if lookahead.peek(kw::repr_c) {
+            let kw_repr_c = input.parse::<kw::repr_c>()?;
+            let entries_content;
+            parenthesized!(entries_content in input);
+            match entries_content.parse::<syn::Lit>() {
+                Ok(syn::Lit::Bool(b)) => {
+                    return Ok( ReprC {
+                        repr_c: Some(b.value()),
+                    });
+                },
+                _ => {
+                    return Err(Error::new_spanned(kw_repr_c, "Invalid repr_c argument"));
+                },
+            }
+        }
+        Ok(ReprC { repr_c: None })
+    }
+}
+
+
 struct Derives {
     derives: Option<Vec<Ident>>,
 }
@@ -152,11 +181,13 @@ pub struct StateMachineDef {
     pub initial_state: Ident,
     pub transitions: Vec<TransitionDef>,
     pub derives: Option<Vec<Ident>>,
+    pub repr_c: Option<bool>,
 }
 
 impl Parse for StateMachineDef {
     fn parse(input: ParseStream) -> Result<Self> {
         let Derives { derives } = input.parse()?;
+        let ReprC { repr_c } = input.parse()?;
 
         let visibility = input.parse()?;
         let name = input.parse()?;
@@ -176,6 +207,7 @@ impl Parse for StateMachineDef {
             initial_state,
             transitions,
             derives,
+            repr_c,
         })
     }
 }
