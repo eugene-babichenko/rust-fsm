@@ -7,6 +7,8 @@ adheres to [Semantic Versioning][semver].
 ## [Unreleased]
 ### Changed
 * Use pattern pattern matching in examples.
+### Added
+* Allow to specify `repr(C)` on generated enums.
 
 ## [0.6.0] - 2021-08-24
 ### Changed
