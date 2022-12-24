@@ -106,7 +106,6 @@ impl Parse for TransitionDef {
     }
 }
 
-
 struct ReprC {
     repr_c: Option<bool>,
 }
@@ -120,19 +119,18 @@ impl Parse for ReprC {
             parenthesized!(entries_content in input);
             match entries_content.parse::<syn::Lit>() {
                 Ok(syn::Lit::Bool(b)) => {
-                    return Ok( ReprC {
+                    return Ok(ReprC {
                         repr_c: Some(b.value()),
                     });
-                },
+                }
                 _ => {
                     return Err(Error::new_spanned(kw_repr_c, "Invalid repr_c argument"));
-                },
+                }
             }
         }
         Ok(ReprC { repr_c: None })
     }
 }
-
 
 struct Derives {
     derives: Option<Vec<Ident>>,
