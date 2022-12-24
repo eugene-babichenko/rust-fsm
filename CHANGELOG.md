@@ -5,8 +5,10 @@ The format is based on [Keep a Changelog][keepachangelog], and this project
 adheres to [Semantic Versioning][semver].
 
 ## [Unreleased]
+
+## [0.6.1] - 2022-12-24
 ### Changed
-* Use pattern pattern matching in examples.
+* Use pattern matching in examples.
 ### Added
 * Allow to specify `repr(C)` on generated enums.
 
@@ -67,7 +69,8 @@ adheres to [Semantic Versioning][semver].
 [keepachangelog]: https://keepachangelog.com/en/1.0.0/
 [semver]: https://semver.org/spec/v2.0.0.html
 
-[Unreleased]: https://github.com/eugene-babichenko/rust-fsm/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/eugene-babichenko/rust-fsm/compare/v0.6.1...HEAD
+[0.6.1]: https://github.com/eugene-babichenko/rust-fsm/compare/v0.6.0...v0.6.1
 [0.6.0]: https://github.com/eugene-babichenko/rust-fsm/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/eugene-babichenko/rust-fsm/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/eugene-babichenko/rust-fsm/compare/v0.3.0...v0.4.0
