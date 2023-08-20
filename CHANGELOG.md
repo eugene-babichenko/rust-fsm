@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog][keepachangelog], and this project
 adheres to [Semantic Versioning][semver].
 
 ## [Unreleased]
+### Changed
+* Update documentation.
 
 ## [0.6.1] - 2022-12-24
 ### Changed
