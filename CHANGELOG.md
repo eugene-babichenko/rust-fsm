@@ -7,6 +7,8 @@ adheres to [Semantic Versioning][semver].
 ## [Unreleased]
 ### Changed
 * Update documentation.
+### Added
+* Derive `Debug` and `Clone` for `StateMachine` struct
 
 ## [0.6.1] - 2022-12-24
 ### Changed
