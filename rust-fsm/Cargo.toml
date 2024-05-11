@@ -8,7 +8,7 @@ readme = "../README.md"
 license = "MIT"
 categories = ["data-structures", "rust-patterns"]
 keywords = ["fsm"]
-version = "0.6.1"
+version = "0.6.2"
 authors = ["Yevhenii Babichenko"]
 edition = "2018"
 
@@ -18,7 +18,7 @@ std = []
 dsl = ["rust-fsm-dsl"]
 
 [dependencies]
-rust-fsm-dsl = { path = "../rust-fsm-dsl", version = "0.6.1", optional = true }
+rust-fsm-dsl = { path = "../rust-fsm-dsl", version = "0.6.2", optional = true }
 
 [profile.dev]
 panic = "abort"
