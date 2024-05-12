@@ -120,6 +120,25 @@ attributes (e.g. `derive`, `repr`) are applied to it.
 Within the `state_machine` macro you must define at least one state
 transition.
 
+#### Visibility
+
+You can specify visibility like this:
+
+```rust
+state_machine! {
+    pub CircuitBreaker(Closed)
+
+    Closed(Unsuccessful) => Open [SetupTimer],
+    Open(TimerTriggered) => HalfOpen,
+    HalfOpen => {
+        Successful => Closed,
+        Unsuccessful => Open [SetupTimer],
+    }
+}
+```
+
+The default visibility is private.
+
 ### Without DSL
 
 The `state_machine` macro has limited capabilities (for example, a state
@@ -134,3 +153,7 @@ You can see an example of the Circuit Breaker state machine in the
 [project repository][repo].
 
 [repo]: https://github.com/eugene-babichenko/rust-fsm/blob/master/tests/circuit_breaker.rs
+[docs-badge]: https://docs.rs/rust-fsm/badge.svg
+[docs-link]: https://docs.rs/rust-fsm
+[crate-badge]: https://img.shields.io/crates/v/rust-fsm.svg
+[crate-link]: https://crates.io/crates/rust-fsm

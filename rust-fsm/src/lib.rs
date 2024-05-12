@@ -117,6 +117,25 @@
 //! Within the `state_machine` macro you must define at least one state
 //! transition.
 //!
+//! ### Visibility
+//! 
+//! You can specify the module visibility like this:
+//!
+//! ```rust
+//! state_machine! {
+//!     pub CircuitBreaker(Closed)
+//! 
+//!     Closed(Unsuccessful) => Open [SetupTimer],
+//!     Open(TimerTriggered) => HalfOpen,
+//!     HalfOpen => {
+//!         Successful => Closed,
+//!         Unsuccessful => Open [SetupTimer],
+//!     }
+//! }
+//! ```
+//! 
+//! The default visibility is private.
+//! 
 //! ## Without DSL
 //!
 //! The `state_machine` macro has limited capabilities (for example, a state
