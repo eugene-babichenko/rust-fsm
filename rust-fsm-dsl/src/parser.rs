@@ -2,7 +2,7 @@ use syn::{
     braced, bracketed, parenthesized,
     parse::{Error, Parse, ParseStream, Result},
     token::{Bracket, Paren},
-    Ident, Token, Visibility,
+    Attribute, Ident, Token, Visibility,
 };
 
 mod kw {
@@ -106,58 +106,6 @@ impl Parse for TransitionDef {
     }
 }
 
-struct ReprC {
-    repr_c: Option<bool>,
-}
-
-impl Parse for ReprC {
-    fn parse(input: ParseStream) -> Result<Self> {
-        let lookahead = input.lookahead1();
-        if lookahead.peek(kw::repr_c) {
-            let kw_repr_c = input.parse::<kw::repr_c>()?;
-            let entries_content;
-            parenthesized!(entries_content in input);
-            match entries_content.parse::<syn::Lit>() {
-                Ok(syn::Lit::Bool(b)) => {
-                    return Ok(ReprC {
-                        repr_c: Some(b.value()),
-                    });
-                }
-                _ => {
-                    return Err(Error::new_spanned(kw_repr_c, "Invalid repr_c argument"));
-                }
-            }
-        }
-        Ok(ReprC { repr_c: None })
-    }
-}
-
-struct Derives {
-    derives: Option<Vec<Ident>>,
-}
-
-impl Parse for Derives {
-    fn parse(input: ParseStream) -> Result<Self> {
-        let lookahead = input.lookahead1();
-        if lookahead.peek(kw::derive) {
-            let kw_derive = input.parse::<kw::derive>()?;
-            let entries_content;
-            parenthesized!(entries_content in input);
-            let entries: Vec<_> = entries_content
-                .parse_terminated::<_, Token![,]>(Ident::parse)?
-                .into_iter()
-                .collect();
-            if entries.is_empty() {
-                return Err(Error::new_spanned(kw_derive, "Derive list cannot be empty"));
-            }
-            return Ok(Derives {
-                derives: Some(entries),
-            });
-        }
-        Ok(Derives { derives: None })
-    }
-}
-
 /// Parses the whole state machine definition in the following form (example):
 ///
 /// ```rust,ignore
@@ -178,14 +126,12 @@ pub struct StateMachineDef {
     pub name: Ident,
     pub initial_state: Ident,
     pub transitions: Vec<TransitionDef>,
-    pub derives: Option<Vec<Ident>>,
-    pub repr_c: Option<bool>,
+    pub attributes: Vec<Attribute>,
 }
 
 impl Parse for StateMachineDef {
     fn parse(input: ParseStream) -> Result<Self> {
-        let Derives { derives } = input.parse()?;
-        let ReprC { repr_c } = input.parse()?;
+        let attributes = Attribute::parse_outer(input)?;
 
         let visibility = input.parse()?;
         let name = input.parse()?;
@@ -204,8 +150,7 @@ impl Parse for StateMachineDef {
             name,
             initial_state,
             transitions,
-            derives,
-            repr_c,
+            attributes,
         })
     }
 }

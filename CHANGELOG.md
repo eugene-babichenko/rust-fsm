@@ -14,6 +14,9 @@ adheres to [Semantic Versioning][semver].
   enum is generated instead of using `()` for the sake of uniformity. No
   attributes (e.g. `derive` and `repr`) are applied on an empty `Output`,
   because many of them are simply not designed to work this way.
+* It is now possible to use proper Rust attributes like `#[derive(Debug)]`,
+  `#[repr(C)]`, etc (any attribute you want really). This replaces the original
+  way this macro had for using derives and specifying representation.
 ## Added
 * A type alias `StateMachine` for `rust_fsm::StateMachine<Impl>` is now
   generated inside the said module.

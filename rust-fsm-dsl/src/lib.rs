@@ -5,8 +5,8 @@
 extern crate proc_macro;
 
 use proc_macro::TokenStream;
-use quote::quote;
-use std::collections::BTreeSet;
+use quote::{quote, ToTokens};
+use std::{collections::BTreeSet, iter::FromIterator};
 use syn::{parse_macro_input, Ident};
 
 mod parser;
@@ -26,17 +26,11 @@ struct Transition<'a> {
 pub fn state_machine(tokens: TokenStream) -> TokenStream {
     let input = parse_macro_input!(tokens as parser::StateMachineDef);
 
-    let derives = if let Some(derives) = input.derives {
-        quote! { #[derive(#(#derives,)*)] }
-    } else {
-        quote! {}
-    };
-
-    let type_repr = if let Some(true) = input.repr_c {
-        quote! { #[repr(C)] }
-    } else {
-        quote! {}
-    };
+    let attrs = input
+        .attributes
+        .into_iter()
+        .map(ToTokens::into_token_stream);
+    let attrs = proc_macro2::TokenStream::from_iter(attrs);
 
     if input.transitions.is_empty() {
         let output = quote! {
@@ -102,11 +96,6 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
             });
         }
     }
-
-    let attrs = quote! {
-        #derives
-        #type_repr
-    };
 
     // Many attrs and derives may work incorrectly (or simply not work) for
     // empty enums, so we just skip them altogether if the output alphabet is

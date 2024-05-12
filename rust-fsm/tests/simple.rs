@@ -1,8 +1,8 @@
 use rust_fsm::*;
 
 state_machine! {
-    derive(Debug)
-    repr_c(true)
+    #[derive(Debug)]
+    #[repr(C)]
     door(Open)
 
     Open(Key) => Closed,
