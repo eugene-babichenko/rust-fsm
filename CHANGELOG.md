@@ -21,6 +21,7 @@ adheres to [Semantic Versioning][semver].
 * A type alias `StateMachine` for `rust_fsm::StateMachine<Impl>` is now
   generated inside the said module.
 * Supplying ones own enums for state, input and output in the proc-macro (#10).
+* An optional possibility to generate Mermaid diagrams.
 
 ## [0.6.2] - 2024-05-11
 ### Changed

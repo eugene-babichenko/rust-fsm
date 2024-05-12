@@ -8,6 +8,9 @@ use std::error::Error;
 #[cfg(feature = "dsl")]
 pub use rust_fsm_dsl::state_machine;
 
+#[cfg(feature = "diagram")]
+pub use aquamarine::aquamarine;
+
 /// This trait is designed to describe any possible deterministic finite state
 /// machine/transducer. This is just a formal definition that may be
 /// inconvenient to be used in practical programming, but it is used throughout

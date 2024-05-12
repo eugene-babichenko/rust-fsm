@@ -57,6 +57,12 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
     let mut transition_cases = Vec::new();
     let mut output_cases = Vec::new();
 
+    #[cfg(feature = "diagram")]
+    let mut mermaid_diagram = format!(
+        "///```mermaid\n///stateDiagram-v2\n///    [*] --> {}\n",
+        input.initial_state
+    );
+
     states.insert(&input.initial_state);
 
     for transition in transitions {
@@ -66,6 +72,11 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
             input_value,
             output,
         } = transition;
+
+        #[cfg(feature = "diagram")]
+        mermaid_diagram.push_str(&format!(
+            "///    {initial_state} --> {final_state}: {input_value}"
+        ));
 
         transition_cases.push(quote! {
             (Self::State::#initial_state, Self::Input::#input_value) => {
@@ -79,7 +90,13 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
                     Some(Self::Output::#output_value)
                 }
             });
+
+            #[cfg(feature = "diagram")]
+            mermaid_diagram.push_str(&format!(" [{output_value}]"));
         }
+
+        #[cfg(feature = "diagram")]
+        mermaid_diagram.push('\n');
 
         states.insert(initial_state);
         states.insert(final_state);
@@ -88,6 +105,11 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
             outputs.insert(output);
         }
     }
+
+    #[cfg(feature = "diagram")]
+    mermaid_diagram.push_str("///```");
+    #[cfg(feature = "diagram")]
+    let mermaid_diagram: proc_macro2::TokenStream = mermaid_diagram.parse().unwrap();
 
     let initial_state_name = &input.initial_state;
 
@@ -139,7 +161,17 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
         }
     };
 
+    #[cfg(feature = "diagram")]
+    let diagram = quote! {
+        #[cfg_attr(doc, rust_fsm::aquamarine)]
+        #mermaid_diagram
+    };
+
+    #[cfg(not(feature = "diagram"))]
+    let diagram = quote!();
+
     let output = quote! {
+        #diagram
         #visibility mod #fsm_name {
             #attrs
             pub struct Impl;

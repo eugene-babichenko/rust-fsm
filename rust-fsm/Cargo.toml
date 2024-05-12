@@ -16,8 +16,10 @@ edition = "2018"
 default = ["std", "dsl"]
 std = []
 dsl = ["rust-fsm-dsl"]
+diagram = ["aquamarine", "rust-fsm-dsl/diagram"]
 
 [dependencies]
+aquamarine = { version = "*", optional = true }
 rust-fsm-dsl = { path = "../rust-fsm-dsl", version = "0.6.2", optional = true }
 
 [profile.dev]

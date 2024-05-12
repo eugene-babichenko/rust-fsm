@@ -179,6 +179,13 @@ state_machine! {
 }
 ```
 
+#### Diagrams
+
+`state_machine` macro can document your state machines with diagrams. This is
+controlled by the `diagram` feature, which is non-default. The diagrams are
+generated in the [Mermaid][mermaid] format. This feature includes the Mermaid
+script into the documentation page.
+
 ### Without DSL
 
 The `state_machine` macro has limited capabilities (for example, a state
@@ -197,3 +204,4 @@ You can see an example of the Circuit Breaker state machine in the
 [docs-link]: https://docs.rs/rust-fsm
 [crate-badge]: https://img.shields.io/crates/v/rust-fsm.svg
 [crate-link]: https://crates.io/crates/rust-fsm
+[mermaid]: https://mermaid.js.org/
