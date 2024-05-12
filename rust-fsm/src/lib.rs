@@ -49,12 +49,12 @@
 //!
 //! The DSL is parsed by the `state_machine` macro. Here is a little example.
 //!
-//! ```rust,ignore
+//! ```rust
 //! use rust_fsm::*;
 //!
 //! state_machine! {
 //!     derive(Debug)
-//!     CircuitBreaker(Closed)
+//!     circuit_breaker(Closed)
 //!
 //!     Closed(Unsuccessful) => Open [SetupTimer],
 //!     Open(TimerTriggered) => HalfOpen,
@@ -67,7 +67,7 @@
 //!
 //! This code sample:
 //!
-//! * Defines a state machine called `CircuitBreaker`;
+//! * Defines a state machine called `circuit_breaker`;
 //! * Derives the `Debug` trait for it (the `derive` section is optional);
 //! * Sets the initial state of this state machine to `Closed`;
 //! * Defines state transitions. For example: on receiving the `Successful`
@@ -80,33 +80,38 @@
 //!
 //! ```rust,ignore
 //! // Initialize the state machine. The state is `Closed` now.
-//! let mut machine: StateMachine<CircuitBreaker> = StateMachine::new();
+//! let mut machine = circuit_breaker::StateMachine::new();
 //! // Consume the `Successful` input. No state transition is performed.
-//! let _ = machine.consume(&CircuitBreakerInput::Successful);
+//! let _ = machine.consume(&circuit_breaker::Input::Successful);
 //! // Consume the `Unsuccesful` input. The machine is moved to the `Open`
 //! // state. The output is `SetupTimer`.
-//! let output = machine.consume(&CircuitBreakerInput::Unsuccessful).unwrap();
+//! let output = machine.consume(&circuit_breaker::Input::Unsuccessful).unwrap();
 //! // Check the output
-//! if let Some(CircuitBreakerOutput::SetupTimer) = output {
+//! if let Some(circuit_breaker::Output::SetupTimer) = output {
 //!     // Set up the timer...
 //! }
 //! // Check the state
-//! if let CircuitBreakerState::Open = machine.state() {
+//! if let circuit_breaker::State::Open = machine.state() {
 //!     // Do something...
 //! }
 //! ```
 //!
-//! As you can see, the following entities are generated:
+//! The following entities are generated:
 //!
-//! * An empty structure `CircuitBreaker` that implements the `StateMachineImpl`
-//!   trait.
-//! * Enums `CircuitBreakerState`, `CircuitBreakerInput` and
-//!   `CircuitBreakerOutput` that represent the state, the input alphabet and
+//! * An empty structure `circuit_breaker::Impl` that implements the
+//!   `StateMachineImpl` trait.
+//! * Enums `circuit_breaker::State`, `circuit_breaker::Input` and
+//!   `circuit_breaker::Output` that represent the state, the input alphabet and
 //!   the output alphabet respectively.
+//! * Type alias `circuit_breaker::StateMachine` that expands to
+//!   `StateMachine<circuit_breaker::Impl>`.
 //!
 //! Note that if there is no outputs in the specification, the output alphabet
-//! is set to `()`. The set of states and the input alphabet must be non-empty
-//! sets.
+//! is an empty enum and due to technical limitations of many Rust attributes,
+//! no attributes (e.g. `derive`, `repr`) are applied to it.
+//!
+//! Within the `state_machine` macro you must define at least one state
+//! transition.
 //!
 //! ## Without DSL
 //!

@@ -6,7 +6,7 @@ use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 state_machine! {
-    CircuitBreaker(Closed)
+    circuit_breaker(Closed)
 
     Closed(Unsuccessful) => Open [SetupTimer],
     Open(TimerTriggered) => HalfOpen,
@@ -18,15 +18,15 @@ state_machine! {
 
 #[test]
 fn circit_breaker_dsl() {
-    let machine: StateMachine<CircuitBreaker> = StateMachine::new();
+    let machine = circuit_breaker::StateMachine::new();
 
     // Unsuccessful request
     let machine = Arc::new(Mutex::new(machine));
     {
         let mut lock = machine.lock().unwrap();
-        let res = lock.consume(&CircuitBreakerInput::Unsuccessful).unwrap();
-        assert!(matches!(res, Some(CircuitBreakerOutput::SetupTimer)));
-        assert!(matches!(lock.state(), &CircuitBreakerState::Open));
+        let res = lock.consume(&circuit_breaker::Input::Unsuccessful).unwrap();
+        assert!(matches!(res, Some(circuit_breaker::Output::SetupTimer)));
+        assert!(matches!(lock.state(), &circuit_breaker::State::Open));
     }
 
     // Set up a timer
@@ -34,9 +34,11 @@ fn circit_breaker_dsl() {
     std::thread::spawn(move || {
         std::thread::sleep(Duration::new(5, 0));
         let mut lock = machine_wait.lock().unwrap();
-        let res = lock.consume(&CircuitBreakerInput::TimerTriggered).unwrap();
+        let res = lock
+            .consume(&circuit_breaker::Input::TimerTriggered)
+            .unwrap();
         assert!(matches!(res, None));
-        assert!(matches!(lock.state(), &CircuitBreakerState::HalfOpen));
+        assert!(matches!(lock.state(), &circuit_breaker::State::HalfOpen));
     });
 
     // Try to pass a request when the circuit breaker is still open
@@ -44,17 +46,17 @@ fn circit_breaker_dsl() {
     std::thread::spawn(move || {
         std::thread::sleep(Duration::new(1, 0));
         let mut lock = machine_try.lock().unwrap();
-        let res = lock.consume(&CircuitBreakerInput::Successful);
+        let res = lock.consume(&circuit_breaker::Input::Successful);
         assert!(matches!(res, Err(TransitionImpossibleError)));
-        assert!(matches!(lock.state(), &CircuitBreakerState::Open));
+        assert!(matches!(lock.state(), &circuit_breaker::State::Open));
     });
 
     // Test if the circit breaker was actually closed
     std::thread::sleep(Duration::new(7, 0));
     {
         let mut lock = machine.lock().unwrap();
-        let res = lock.consume(&CircuitBreakerInput::Successful).unwrap();
+        let res = lock.consume(&circuit_breaker::Input::Successful).unwrap();
         assert!(matches!(res, None));
-        assert!(matches!(lock.state(), &CircuitBreakerState::Closed));
+        assert!(matches!(lock.state(), &circuit_breaker::State::Closed));
     }
 }

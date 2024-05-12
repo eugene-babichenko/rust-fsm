@@ -45,7 +45,7 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
         return output.into();
     }
 
-    let struct_name = input.name;
+    let fsm_name = input.name;
     let visibility = input.visibility;
 
     let transitions: Vec<_> = input
@@ -76,10 +76,7 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
         }
     }
 
-    let states_enum_name = Ident::new(&format!("{}State", struct_name), struct_name.span());
     let initial_state_name = &input.initial_state;
-
-    let inputs_enum_name = Ident::new(&format!("{}Input", struct_name), struct_name.span());
 
     let mut transition_cases = vec![];
     for transition in transitions.iter() {
@@ -87,83 +84,80 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
         let input_value = &transition.input_value;
         let final_state = &transition.final_state;
         transition_cases.push(quote! {
-            (#states_enum_name::#initial_state, #inputs_enum_name::#input_value) => {
-                Some(#states_enum_name::#final_state)
+            (State::#initial_state, Input::#input_value) => {
+                Some(State::#final_state)
             }
         });
     }
 
-    let (outputs_repr, outputs_type, output_impl) = if !outputs.is_empty() {
-        let outputs_type_name = Ident::new(&format!("{}Output", struct_name), struct_name.span());
-        let outputs_repr = quote! {
-            #derives
-            #type_repr
-            #visibility enum #outputs_type_name {
-                #(#outputs),*
-            }
-        };
-
-        let outputs_type = quote! { #outputs_type_name };
-
-        let mut output_cases = vec![];
-        for transition in transitions.iter() {
-            if let Some(output_value) = &transition.output {
-                let initial_state = &transition.initial_state;
-                let input_value = &transition.input_value;
-                output_cases.push(quote! {
-                    (#states_enum_name::#initial_state, #inputs_enum_name::#input_value) => {
-                        Some(#outputs_type_name::#output_value)
-                    }
-                });
-            }
+    let mut output_cases = vec![];
+    for transition in transitions.iter() {
+        if let Some(output_value) = &transition.output {
+            let initial_state = &transition.initial_state;
+            let input_value = &transition.input_value;
+            output_cases.push(quote! {
+                (State::#initial_state, Input::#input_value) => {
+                    Some(Output::#output_value)
+                }
+            });
         }
+    }
 
-        let output_impl = quote! {
-            match (state, input) {
-                #(#output_cases)*
-                _ => None,
-            }
-        };
+    let attrs = quote! {
+        #derives
+        #type_repr
+    };
 
-        (outputs_repr, outputs_type, output_impl)
+    // Many attrs and derives may work incorrectly (or simply not work) for
+    // empty enums, so we just skip them altogether if the output alphabet is
+    // empty.
+    let output_attrs = if outputs.is_empty() {
+        quote!()
     } else {
-        (quote! {}, quote! { () }, quote! {None})
+        attrs.clone()
     };
 
     let output = quote! {
-        #derives
-        #type_repr
-        #visibility struct #struct_name;
+        #visibility mod #fsm_name {
+            #attrs
+            pub struct Impl;
 
-        #derives
-        #type_repr
-        #visibility enum #states_enum_name {
-            #(#states),*
-        }
+            pub type StateMachine = rust_fsm::StateMachine<Impl>;
 
-        #derives
-        #type_repr
-        #visibility enum #inputs_enum_name {
-            #(#inputs),*
-        }
-
-        #outputs_repr
-
-        impl rust_fsm::StateMachineImpl for #struct_name {
-            type Input = #inputs_enum_name;
-            type State = #states_enum_name;
-            type Output = #outputs_type;
-            const INITIAL_STATE: Self::State = #states_enum_name::#initial_state_name;
-
-            fn transition(state: &Self::State, input: &Self::Input) -> Option<Self::State> {
-                match (state, input) {
-                    #(#transition_cases)*
-                    _ => None,
-                }
+            #attrs
+            pub enum Input {
+                #(#inputs),*
             }
 
-            fn output(state: &Self::State, input: &Self::Input) -> Option<Self::Output> {
-                #output_impl
+            #attrs
+            pub enum State {
+                #(#states),*
+            }
+
+            #output_attrs
+            pub enum Output {
+                #(#outputs),*
+            }
+
+            impl rust_fsm::StateMachineImpl for Impl {
+                type Input = Input;
+                type State = State;
+                type Output = Output;
+                const INITIAL_STATE: Self::State = State::#initial_state_name;
+
+                fn transition(state: &Self::State, input: &Self::Input) -> Option<Self::State> {
+                    match (state, input) {
+                        #(#transition_cases)*
+                        _ => None,
+                    }
+                }
+
+                fn output(state: &Self::State, input: &Self::Input) -> Option<Self::Output> {
+                    match (state, input) {
+                        #(#output_cases)*
+                        _ => None,
+                    }
+                }
             }
         }
     };
