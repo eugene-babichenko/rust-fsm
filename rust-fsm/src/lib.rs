@@ -138,6 +138,45 @@
 //!
 //! The default visibility is private.
 //!
+//! ### Custom allphabet types
+//!
+//! You can supply your own types to use as input, output or state. All of them
+//! are optional: you can use only one of them or all of them at once if you
+//! want to. The current limitation is that you have to supply a fully qualified
+//! type path.
+//!
+//! ```rust,ignore
+//! use rust_fsm::*;
+//!
+//! pub enum Input {
+//!     Successful,
+//!     Unsuccessful,
+//!     TimerTriggered,
+//! }
+//!
+//! pub enum State {
+//!     Closed,
+//!     HalfOpen,
+//!     Open,
+//! }
+//!
+//! pub enum Output {
+//!     SetupTimer,
+//! }
+//!
+//! state_machine! {
+//!     #[state_machine(input(crate::Input), state(crate::State), output(crate::Output))]
+//!     circuit_breaker(Closed)
+//!
+//!     Closed(Unsuccessful) => Open [SetupTimer],
+//!     Open(TimerTriggered) => HalfOpen,
+//!     HalfOpen => {
+//!         Successful => Closed,
+//!         Unsuccessful => Open [SetupTimer]
+//!     }
+//! }
+//! ```
+//!
 //! ## Without DSL
 //!
 //! The `state_machine` macro has limited capabilities (for example, a state

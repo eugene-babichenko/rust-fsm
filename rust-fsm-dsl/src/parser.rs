@@ -2,13 +2,8 @@ use syn::{
     braced, bracketed, parenthesized,
     parse::{Error, Parse, ParseStream, Result},
     token::{Bracket, Paren},
-    Attribute, Ident, Token, Visibility,
+    Attribute, Ident, Path, Token, Visibility,
 };
-
-mod kw {
-    syn::custom_keyword!(derive);
-    syn::custom_keyword!(repr_c);
-}
 
 /// The output of a state transition
 pub struct Output(Option<Ident>);
@@ -88,7 +83,7 @@ impl Parse for TransitionDef {
             braced!(entries_content in input);
 
             let entries: Vec<_> = entries_content
-                .parse_terminated::<_, Token![,]>(TransitionEntry::parse)?
+                .parse_terminated(TransitionEntry::parse, Token![,])?
                 .into_iter()
                 .collect();
             if entries.is_empty() {
@@ -127,11 +122,47 @@ pub struct StateMachineDef {
     pub initial_state: Ident,
     pub transitions: Vec<TransitionDef>,
     pub attributes: Vec<Attribute>,
+    pub input_type: Option<Path>,
+    pub state_type: Option<Path>,
+    pub output_type: Option<Path>,
 }
 
 impl Parse for StateMachineDef {
     fn parse(input: ParseStream) -> Result<Self> {
-        let attributes = Attribute::parse_outer(input)?;
+        let mut state_machine_attributes = Vec::new();
+        let attributes = Attribute::parse_outer(input)?
+            .into_iter()
+            .filter_map(|attribute| {
+                if attribute.path().is_ident("state_machine") {
+                    state_machine_attributes.push(attribute);
+                    None
+                } else {
+                    Some(attribute)
+                }
+            })
+            .collect();
+
+        let mut input_type = None;
+        let mut state_type = None;
+        let mut output_type = None;
+
+        for attribute in state_machine_attributes {
+            attribute.parse_nested_meta(|meta| {
+                let content;
+                parenthesized!(content in meta.input);
+                let p: Path = content.parse()?;
+
+                if meta.path.is_ident("input") {
+                    input_type = Some(p);
+                } else if meta.path.is_ident("state") {
+                    state_type = Some(p);
+                } else if meta.path.is_ident("output") {
+                    output_type = Some(p);
+                }
+
+                Ok(())
+            })?;
+        }
 
         let visibility = input.parse()?;
         let name = input.parse()?;
@@ -141,7 +172,7 @@ impl Parse for StateMachineDef {
         let initial_state = initial_state_content.parse()?;
 
         let transitions = input
-            .parse_terminated::<_, Token![,]>(TransitionDef::parse)?
+            .parse_terminated(TransitionDef::parse, Token![,])?
             .into_iter()
             .collect();
 
@@ -151,6 +182,9 @@ impl Parse for StateMachineDef {
             initial_state,
             transitions,
             attributes,
+            input_type,
+            state_type,
+            output_type,
         })
     }
 }

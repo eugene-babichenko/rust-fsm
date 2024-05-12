@@ -78,8 +78,8 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
         let input_value = &transition.input_value;
         let final_state = &transition.final_state;
         transition_cases.push(quote! {
-            (State::#initial_state, Input::#input_value) => {
-                Some(State::#final_state)
+            (Self::State::#initial_state, Self::Input::#input_value) => {
+                Some(Self::State::#final_state)
             }
         });
     }
@@ -90,20 +90,59 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
             let initial_state = &transition.initial_state;
             let input_value = &transition.input_value;
             output_cases.push(quote! {
-                (State::#initial_state, Input::#input_value) => {
-                    Some(Output::#output_value)
+                (Self::State::#initial_state, Self::Input::#input_value) => {
+                    Some(Self::Output::#output_value)
                 }
             });
         }
     }
 
-    // Many attrs and derives may work incorrectly (or simply not work) for
-    // empty enums, so we just skip them altogether if the output alphabet is
-    // empty.
-    let output_attrs = if outputs.is_empty() {
-        quote!()
-    } else {
-        attrs.clone()
+    let (input_type, input_impl) = match input.input_type {
+        Some(t) => (quote!(#t), quote!()),
+        None => (
+            quote!(Input),
+            quote! {
+                #attrs
+                pub enum Input {
+                    #(#inputs),*
+                }
+            },
+        ),
+    };
+
+    let (state_type, state_impl) = match input.state_type {
+        Some(t) => (quote!(#t), quote!()),
+        None => (
+            quote!(State),
+            quote! {
+                #attrs
+                pub enum State {
+                    #(#states),*
+                }
+            },
+        ),
+    };
+
+    let (output_type, output_impl) = match input.output_type {
+        Some(t) => (quote!(#t), quote!()),
+        None => {
+            // Many attrs and derives may work incorrectly (or simply not work) for empty enums, so we just skip them
+            // altogether if the output alphabet is empty.
+            let attrs = if outputs.is_empty() {
+                quote!()
+            } else {
+                attrs.clone()
+            };
+            (
+                quote!(Output),
+                quote! {
+                    #attrs
+                    pub enum Output {
+                        #(#outputs),*
+                    }
+                },
+            )
+        }
     };
 
     let output = quote! {
@@ -113,26 +152,15 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
 
             pub type StateMachine = rust_fsm::StateMachine<Impl>;
 
-            #attrs
-            pub enum Input {
-                #(#inputs),*
-            }
-
-            #attrs
-            pub enum State {
-                #(#states),*
-            }
-
-            #output_attrs
-            pub enum Output {
-                #(#outputs),*
-            }
+            #input_impl
+            #state_impl
+            #output_impl
 
             impl rust_fsm::StateMachineImpl for Impl {
-                type Input = Input;
-                type State = State;
-                type Output = Output;
-                const INITIAL_STATE: Self::State = State::#initial_state_name;
+                type Input = #input_type;
+                type State = #state_type;
+                type Output = #output_type;
+                const INITIAL_STATE: Self::State = Self::State::#initial_state_name;
 
                 fn transition(state: &Self::State, input: &Self::Input) -> Option<Self::State> {
                     match (state, input) {
