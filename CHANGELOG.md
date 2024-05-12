@@ -20,7 +20,7 @@ adheres to [Semantic Versioning][semver].
 ## Added
 * A type alias `StateMachine` for `rust_fsm::StateMachine<Impl>` is now
   generated inside the said module.
-* Supplying ones own enums for state, input and output in the proc-macro.
+* Supplying ones own enums for state, input and output in the proc-macro (#10).
 
 ## [0.6.2] - 2024-05-11
 ### Changed

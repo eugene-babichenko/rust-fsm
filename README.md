@@ -6,9 +6,9 @@
 The `rust-fsm` crate provides a simple and universal framework for building
 state machines in Rust with minimum effort.
 
-The essential part of this crate is the `StateMachineImpl` trait. This trait
-allows a developer to provide a strict state machine definition, e.g. specify
-its:
+The essential part of this crate is the
+[`StateMachineImpl`](trait.StateMachineImpl.html) trait. This trait allows a
+developer to provide a strict state machine definition, e.g. specify its:
 
 * An input alphabet - a set of entities that the state machine takes as
   inputs and performs state transitions based on them.
@@ -141,13 +141,13 @@ state_machine! {
 
 The default visibility is private.
 
-#### Custom allphabet types
+#### Custom alphabet types
 
 You can supply your own types to use as input, output or state. All of them are
 optional: you can use only one of them or all of them at once if you want to.
 The current limitation is that you have to supply a fully qualified type path.
 
-```rust
+```rust,ignore
 use rust_fsm::*;
 
 pub enum Input {
