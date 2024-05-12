@@ -1,4 +1,4 @@
-# A framework for building finite state machines in Rust
+# A framework and a DSL for building finite state machines in Rust
 
 [![Documentation][docs-badge]][docs-link]
 [![Latest Version][crate-badge]][crate-link]
@@ -29,6 +29,18 @@ of state machines:
 * A Mealy machine by providing all entities listed above.
 * A Moore machine by providing an output function that do not depend on the
   provided inputs.
+
+## Feature flags
+
+### Default
+
+- `std` - implement features that require the `std` environment. See below.
+- `dsl` - re-export `rust-fsm-dsl` from `rust-fsm`. Recommended to leave this on
+  for the best development experience.
+
+### Non-default
+
+- `diagram` - generate Mermaid state diagrams in the doc strings. See below.
 
 ## Usage in `no_std` environments
 
