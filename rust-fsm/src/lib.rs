@@ -118,13 +118,15 @@
 //! transition.
 //!
 //! ### Visibility
-//! 
+//!
 //! You can specify the module visibility like this:
 //!
 //! ```rust
+//! use rust_fsm::*;
+//!
 //! state_machine! {
 //!     pub CircuitBreaker(Closed)
-//! 
+//!
 //!     Closed(Unsuccessful) => Open [SetupTimer],
 //!     Open(TimerTriggered) => HalfOpen,
 //!     HalfOpen => {
@@ -133,9 +135,9 @@
 //!     }
 //! }
 //! ```
-//! 
+//!
 //! The default visibility is private.
-//! 
+//!
 //! ## Without DSL
 //!
 //! The `state_machine` macro has limited capabilities (for example, a state

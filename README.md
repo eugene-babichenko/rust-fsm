@@ -125,6 +125,8 @@ transition.
 You can specify visibility like this:
 
 ```rust
+use rust_fsm::*;
+
 state_machine! {
     pub CircuitBreaker(Closed)
 
