@@ -17,6 +17,7 @@ adheres to [Semantic Versioning][semver].
 * It is now possible to use proper Rust attributes like `#[derive(Debug)]`,
   `#[repr(C)]`, etc (any attribute you want really). This replaces the original
   way this macro had for using derives and specifying representation.
+* Use Rust 2021 edition.
 ## Added
 * A type alias `StateMachine` for `rust_fsm::StateMachine<Impl>` is now
   generated inside the said module.
