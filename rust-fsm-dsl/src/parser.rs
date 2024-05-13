@@ -116,6 +116,7 @@ impl Parse for TransitionDef {
 /// }
 /// ```
 pub struct StateMachineDef {
+    pub doc: Vec<Attribute>,
     /// The visibility modifier (applies to all generated items)
     pub visibility: Visibility,
     pub name: Ident,
@@ -130,11 +131,15 @@ pub struct StateMachineDef {
 impl Parse for StateMachineDef {
     fn parse(input: ParseStream) -> Result<Self> {
         let mut state_machine_attributes = Vec::new();
+        let mut doc = Vec::new();
         let attributes = Attribute::parse_outer(input)?
             .into_iter()
             .filter_map(|attribute| {
                 if attribute.path().is_ident("state_machine") {
                     state_machine_attributes.push(attribute);
+                    None
+                } else if attribute.path().is_ident("doc") {
+                    doc.push(attribute);
                     None
                 } else {
                     Some(attribute)
@@ -177,6 +182,7 @@ impl Parse for StateMachineDef {
             .collect();
 
         Ok(Self {
+            doc,
             visibility,
             name,
             initial_state,

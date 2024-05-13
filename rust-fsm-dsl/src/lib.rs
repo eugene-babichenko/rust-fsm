@@ -7,7 +7,7 @@ extern crate proc_macro;
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
 use std::{collections::BTreeSet, iter::FromIterator};
-use syn::{parse_macro_input, Ident};
+use syn::{parse_macro_input, Attribute, Ident};
 
 mod parser;
 
@@ -20,17 +20,19 @@ struct Transition<'a> {
     output: &'a Option<Ident>,
 }
 
+fn attrs_to_token_stream(attrs: Vec<Attribute>) -> proc_macro2::TokenStream {
+    let attrs = attrs.into_iter().map(ToTokens::into_token_stream);
+    proc_macro2::TokenStream::from_iter(attrs)
+}
+
 #[proc_macro]
 /// Produce a state machine definition from the provided `rust-fmt` DSL
 /// description.
 pub fn state_machine(tokens: TokenStream) -> TokenStream {
     let input = parse_macro_input!(tokens as parser::StateMachineDef);
 
-    let attrs = input
-        .attributes
-        .into_iter()
-        .map(ToTokens::into_token_stream);
-    let attrs = proc_macro2::TokenStream::from_iter(attrs);
+    let doc = attrs_to_token_stream(input.doc);
+    let attrs = attrs_to_token_stream(input.attributes);
 
     if input.transitions.is_empty() {
         let output = quote! {
@@ -171,6 +173,7 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
     let diagram = quote!();
 
     let output = quote! {
+        #doc
         #diagram
         #visibility mod #fsm_name {
             #attrs

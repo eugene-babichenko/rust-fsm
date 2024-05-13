@@ -1,0 +1,7 @@
+[package]
+name = "doc-example"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+rust-fsm = { path = "../rust-fsm", version = "0.6.2", features = ["diagram"] }

@@ -70,6 +70,7 @@ use rust_fsm::*;
 state_machine! {
     #[derive(Debug)]
     #[repr(C)]
+    /// A Circuit Breaker state machine.
     circuit_breaker(Closed)
 
     Closed(Unsuccessful) => Open [SetupTimer],
@@ -197,6 +198,12 @@ state_machine! {
 controlled by the `diagram` feature, which is non-default. The diagrams are
 generated in the [Mermaid][mermaid] format. This feature includes the Mermaid
 script into the documentation page.
+
+To see this in action, download the repository and run:
+
+```bash
+cargo doc -p doc-example --open
+```
 
 ### Without DSL
 

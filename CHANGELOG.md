@@ -23,6 +23,7 @@ adheres to [Semantic Versioning][semver].
   generated inside the said module.
 * Supplying ones own enums for state, input and output in the proc-macro (#10).
 * An optional possibility to generate Mermaid diagrams.
+* Processing doc comments to generate the state machine module documentation.
 
 ## [0.6.2] - 2024-05-11
 ### Changed
