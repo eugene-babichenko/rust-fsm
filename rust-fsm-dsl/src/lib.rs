@@ -163,7 +163,7 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
 
     #[cfg(feature = "diagram")]
     let diagram = quote! {
-        #[cfg_attr(doc, rust_fsm::aquamarine)]
+        #[cfg_attr(doc, ::rust_fsm::aquamarine)]
         #mermaid_diagram
     };
 
@@ -176,13 +176,13 @@ pub fn state_machine(tokens: TokenStream) -> TokenStream {
             #attrs
             pub struct Impl;
 
-            pub type StateMachine = rust_fsm::StateMachine<Impl>;
+            pub type StateMachine = ::rust_fsm::StateMachine<Impl>;
 
             #input_impl
             #state_impl
             #output_impl
 
-            impl rust_fsm::StateMachineImpl for Impl {
+            impl ::rust_fsm::StateMachineImpl for Impl {
                 type Input = #input_type;
                 type State = #state_type;
                 type Output = #output_type;
