@@ -205,6 +205,8 @@ To see this in action, download the repository and run:
 cargo doc -p doc-example --open
 ```
 
+![image](doc-diagram-example.png)
+
 ### Without DSL
 
 The `state_machine` macro has limited capabilities (for example, a state
