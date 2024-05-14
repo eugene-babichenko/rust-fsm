@@ -18,7 +18,7 @@ adheres to [Semantic Versioning][semver].
   `#[repr(C)]`, etc (any attribute you want really). This replaces the original
   way this macro had for using derives and specifying representation.
 * Use Rust 2021 edition.
-## Added
+### Added
 * A type alias `StateMachine` for `rust_fsm::StateMachine<Impl>` is now
   generated inside the said module.
 * Supplying ones own enums for state, input and output in the proc-macro (#10).
