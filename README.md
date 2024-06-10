@@ -3,6 +3,8 @@
 [![Documentation][docs-badge]][docs-link]
 [![Latest Version][crate-badge]][crate-link]
 
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/ybabichenko)
+
 The `rust-fsm` crate provides a simple and universal framework for building
 state machines in Rust with minimum effort.
 
