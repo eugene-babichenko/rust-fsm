@@ -10,35 +10,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install Rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          components: rustfmt, clippy
-          override: true
-
       - name: Run cargo fmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
+        run: cargo fmt --all --check
 
       - name: Run cargo clippy
-        uses: actions-rs/cargo@v1
-        with:
-          command: clippy
-          args: --all-features -- -D warnings
+        run: cargo clippy --all-features -- -D warnings
 
       - name: Ensure the library compiles in a no_std env
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: -p rust-fsm --no-default-features --features "dsl"
+        run: cargo build -p rust-fsm --no-default-features --features "dsl"
 
       - name: Run tests
-        uses: actions-rs/cargo@v1
         env:
             RUST_BACKTRACE: 1
-        with:
-          command: test
+        run: cargo test
