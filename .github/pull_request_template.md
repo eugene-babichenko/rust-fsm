@@ -8,5 +8,5 @@
 - [ ] `CHANGELOG.md` is updated.
 - [ ] `cargo-fmt` done.
 - [ ] `cargo-clippy` done.
-- [ ] `cargp-test` done.
+- [ ] `cargo-test` done.
 - [ ] The new changes are sufficiently tested.
