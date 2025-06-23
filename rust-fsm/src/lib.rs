@@ -123,7 +123,7 @@ The following entities are generated:
   `circuit_breaker::Output` that represent the state, the input alphabet and the
   output alphabet respectively.
 * Type alias `circuit_breaker::StateMachine` that expands to
-`StateMachine<circuit_breaker::Impl>`.
+  `StateMachine<circuit_breaker::Impl>`.
 
 Note that if there is no outputs in the specification, the output alphabet is an
 empty enum and due to technical limitations of many Rust attributes, no
