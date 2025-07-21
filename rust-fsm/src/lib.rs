@@ -45,7 +45,7 @@ of state machines:
 
 This library has the feature named `std` which is enabled by default. You
 may want to import this library as
-`rust-fsm = { version = "0.7", default-features = false, features = ["dsl"] }`
+`rust-fsm = { version = "0.8", default-features = false, features = ["dsl"] }`
 to use it in a `no_std` environment. This only affects error types (the `Error`
 trait is only available in `std`).
 
