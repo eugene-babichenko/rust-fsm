@@ -19,7 +19,7 @@ dsl = ["rust-fsm-dsl"]
 diagram = ["aquamarine", "rust-fsm-dsl/diagram"]
 
 [dependencies]
-aquamarine = { version = "0.5", optional = true }
+aquamarine = { version = "0.6", optional = true }
 rust-fsm-dsl = { path = "../rust-fsm-dsl", version = "0.7.0", optional = true }
 
 [profile.dev]

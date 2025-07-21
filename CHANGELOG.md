@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog][keepachangelog], and this project
 adheres to [Semantic Versioning][semver].
 
 ## [Unreleased]
+### Changed
+* Updated  `aquamarine` from `0.5` to `0.6`.
 
 ## [0.7.0] - 2024-06-01
 ### Changed
