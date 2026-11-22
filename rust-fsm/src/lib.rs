@@ -282,13 +282,13 @@ where
 {
     /// Create a new instance of this wrapper which encapsulates the initial
     /// state.
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self::from_state(T::INITIAL_STATE)
     }
 
     /// Create a new instance of this wrapper which encapsulates the given
     /// state.
-    pub fn from_state(state: T::State) -> Self {
+    pub const fn from_state(state: T::State) -> Self {
         Self { state }
     }
 
